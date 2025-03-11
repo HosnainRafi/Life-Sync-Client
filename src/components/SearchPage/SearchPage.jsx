@@ -35,14 +35,17 @@ function SearchPage() {
 
   const handleSelectDistrict = (e) => {
     const districtId = e.target.value;
-    setSelectedDistrict(districtId);
-
+    const selectedDistrictObj = districts.find(d => d.id.toString() === districtId);
+  
+    setSelectedDistrict(selectedDistrictObj ? selectedDistrictObj.name : ""); // Store the name instead of ID
+  
     const filteredUpazilas = allUpazilas.filter(
       (item) => item.district_id.toString() === districtId
     );
     setUpazilas(filteredUpazilas);
-    setSelectedUpazila(""); // Reset upazila selection when district changes
+    setSelectedUpazila(""); // Reset upazila selection
   };
+  
 
 
   const handleSearch = async e => {
@@ -163,23 +166,36 @@ function SearchPage() {
                   <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Upazila
                   </th>
+                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Hospital name
+                  </th>
+                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Address
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {donors.map(donor => (
                   <tr key={donor.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {donor.name}
+                      {donor.recipientName}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {donor.bloodGroup}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {donor.district}
+                      {donor.recipientDistrict}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {donor.upazila}
+                      {donor.recipientUpazila}
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {donor.hospitalName}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {donor.address}
+                    </td>
+                    
                   </tr>
                 ))}
               </tbody>
