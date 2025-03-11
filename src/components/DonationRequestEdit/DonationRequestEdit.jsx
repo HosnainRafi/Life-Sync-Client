@@ -210,7 +210,7 @@ function DonationRequestEdit() {
                 type="tel"
                 name="phoneNumber"
                 id="phoneNumber"
-                defaultValue={data?.recipientName}
+                defaultValue={data?.phoneNumber}
                 required
                 placeholder="Phone Number"
                 className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"

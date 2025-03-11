@@ -48,7 +48,7 @@ function DonationRequest() {
                   <td>{donation?.donationTime}</td>
                   <td>
                     <Link to={`/view-details/${donation?._id}`}>
-                      <button className="btn btn-success">View Details</button>
+                      <button style={{color: "white"}} className="btn btn-success">View Details</button>
                     </Link>
                   </td>
                 </tr>

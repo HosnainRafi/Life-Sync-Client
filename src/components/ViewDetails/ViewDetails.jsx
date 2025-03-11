@@ -17,7 +17,7 @@ function ViewDetails() {
       setDonationRequestSingleData(data);
     })();
   }, [_id, control]);
-console.log(donationRequestSingleData)
+  console.log(donationRequestSingleData)
   const handleDonate = () => {
     Swal.fire({
       title: 'Want to Donate?',
@@ -40,6 +40,7 @@ console.log(donationRequestSingleData)
     });
   };
 
+  
   return (
     <div className="my-8 lg:my-12">
       {donationRequestSingleData.map(data => (
@@ -84,6 +85,9 @@ console.log(donationRequestSingleData)
             <p className="mb-1">
               <strong>Email:</strong> {data.email}
             </p>
+            <p className="mb-1">
+              <strong>Phone:</strong> {data.phoneNumber}
+            </p>
           </div>
           <div className="mb-4">
             <h2 className="text-xl font-semibold mb-2">Address</h2>
@@ -93,14 +97,17 @@ console.log(donationRequestSingleData)
             <h2 className="text-xl font-semibold mb-2">Description</h2>
             <p>{data.description}</p>
           </div>
-          <div>
-            <button
-              onClick={handleDonate}
-              className="btn btn-wide bg-blue-900 text-white hover:bg-blue-600 active:bg-blue-800"
-            >
-              Donate
-            </button>
-          </div>
+
+          {data?.status === "pending" && (
+            <div>
+              <button style={{color: "white"}}
+                onClick={handleDonate}
+                className="btn btn-wide bg-blue-900 text-white hover:bg-blue-600 active:bg-blue-800"
+              >
+                Donate
+              </button>
+            </div>
+          )}
         </div>
       ))}
     </div>
