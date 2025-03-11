@@ -8,23 +8,42 @@ function SearchPage() {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedUpazila, setSelectedUpazila] = useState('');
   const [donors, setDonors] = useState([]);
-
-  useEffect(() => {
-    // Fetch district data
-    (async () => {
-      const res = await fetch('/districts.json');
-      const data = await res.json();
-      setDistricts(data[2].data);
-    })();
-  });
-
+  const [allUpazilas, setAllUpazilas] = useState([]); // Store all upazilas
+  
   useEffect(() => {
     (async () => {
-      const res = await fetch('/upazilas.json');
+      const res = await fetch("/districts.json");
       const data = await res.json();
-      setUpazilas(data[2].data);
+      const sortedDistricts = data[2].data.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+      setDistricts(sortedDistricts);
     })();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch("/upazilas.json");
+      const data = await res.json();
+      const sortedUpazilas = data[2].data.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+      setAllUpazilas(sortedUpazilas); // Store full list separately
+      setUpazilas(sortedUpazilas);
+    })();
+  }, []);
+
+  const handleSelectDistrict = (e) => {
+    const districtId = e.target.value;
+    setSelectedDistrict(districtId);
+
+    const filteredUpazilas = allUpazilas.filter(
+      (item) => item.district_id.toString() === districtId
+    );
+    setUpazilas(filteredUpazilas);
+    setSelectedUpazila(""); // Reset upazila selection when district changes
+  };
+
 
   const handleSearch = async e => {
     e.preventDefault();
@@ -77,19 +96,21 @@ function SearchPage() {
             District
           </label>
           <select
-            id="district"
-            value={selectedDistrict}
-            onChange={e => setSelectedDistrict(e.target.value)}
-            className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          >
-            <option value="">Select District</option>
-            {districts.map(district => (
-              <option key={district.id} value={district.id}>
-                {district.name}
-              </option>
-            ))}
-          </select>
+          id="district"
+          value={selectedDistrict}
+          onChange={handleSelectDistrict}
+          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        >
+          <option value="">Select District</option>
+          {districts.map((district) => (
+            <option key={district.id} value={district.id}>
+              {district.name}
+            </option>
+          ))}
+        </select>
         </div>
+
+
         <div>
           <label
             htmlFor="upazila"
@@ -98,19 +119,21 @@ function SearchPage() {
             Upazila
           </label>
           <select
-            id="upazila"
-            value={selectedUpazila}
-            onChange={e => setSelectedUpazila(e.target.value)}
-            className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          >
-            <option value="">Select Upazila</option>
-            {upazilas.map(upazila => (
-              <option key={upazila.id} value={upazila.id}>
-                {upazila.name}
-              </option>
-            ))}
-          </select>
+          id="upazila"
+          value={selectedUpazila}
+          onChange={(e) => setSelectedUpazila(e.target.value)}
+          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          disabled={!selectedDistrict} // Disable if no district selected
+        >
+          <option value="">Select Upazila</option>
+          {upazilas.map((item) => (
+            <option key={item.id} value={item.name}>
+              {item.name}
+            </option>
+          ))}
+        </select>
         </div>
+        
         <button
           type="submit"
           className="mt-4 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -118,6 +141,9 @@ function SearchPage() {
           Search
         </button>
       </form>
+
+
+      
       <div className="mt-10">
         {donors.length > 0 ? (
           <div>

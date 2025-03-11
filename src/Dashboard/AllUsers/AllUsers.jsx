@@ -10,13 +10,15 @@ function AllUsers() {
   const [statusFilter, setStatusFilter] = useState(''); // Add state for filter
 
   useEffect(() => {
-    (async () => {
+    const fetchUsers = setTimeout(async () => {
       const { data } = await axios.get(
         `https://life-sync-server.vercel.app/users`
       );
       setUserData(data);
-    })();
-  }, [user?.email, control]);
+    }, 500); // Adjust delay as needed
+  
+    return () => clearTimeout(fetchUsers); // Cleanup function
+  }, [control]);
 
   const handleBlock = async (id, status, role) => {
     if (status === 'active' && role !== 'admin') {
@@ -138,24 +140,24 @@ function AllUsers() {
                 <td>{item?.status}</td>
                 <td>
                   <button
-                    onClick={() =>
-                      handleBlock(item?._id, item?.status, item?.role)
-                    }
+                    onClick={() => handleBlock(item?._id, item?.status, item?.role)}
                     className="btn btn-sm btn-active btn-error"
+                    disabled={item?.status === 'block' || item?.role === 'admin'} // Disable if already blocked or admin
                   >
                     Block
                   </button>
                 </td>
                 <td>
                   <button
-                    onClick={() =>
-                      handleUnBlock(item?._id, item?.status, item?.role)
-                    }
+                    onClick={() => handleUnBlock(item?._id, item?.status, item?.role)}
                     className="btn btn-sm btn-active btn-primary"
+                    disabled={item?.status === 'active' || item?.role === 'admin'} // Disable if already active or admin
                   >
                     Unblock
                   </button>
                 </td>
+
+
                 <td>
                   <button
                     onClick={() => handleVolunteer(item?._id, item?.role)}

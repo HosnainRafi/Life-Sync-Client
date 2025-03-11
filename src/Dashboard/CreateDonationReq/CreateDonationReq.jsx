@@ -7,35 +7,47 @@ import Swal from 'sweetalert2';
 function CreateDonationReq() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [district, setDistrict] = useState([]);
-  const [upazila, setUpazila] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [upazilas, setUpazilas] = useState([]);
+  const [selectedUpazilas, setSelectedUpazilas] = useState([]);
   const [userData, setUserData] = useState([]);
+
+
+  const style = {
+
+    fontSize: 14
+  };
+
   useEffect(() => {
     (async () => {
-      const res = await fetch('/districts.json');
+      const res = await fetch("/districts.json");
       const data = await res.json();
-      setDistrict(data[2].data);
-    })();
-  }, []);
-  useEffect(() => {
-    (async () => {
-      const res = await fetch('/upazilas.json');
-      const data = await res.json();
-      setUpazila(data[2].data);
+      setDistricts(data[2].data);
     })();
   }, []);
 
-  const handleSelectDistrict = e => {
-    console.log('district selected', e.target.value);
+  useEffect(() => {
+    (async () => {
+      const res = await fetch("/upazilas.json");
+      const data = await res.json();
+      setUpazilas(data[2].data);
+    })();
+  }, []);
+
+  const handleSelectDistrict = (e) => {
     const districtName = e.target.value;
-    const districtId = district.findIndex(
-      item => item.bn_name === districtName
+    const selectedDistrict = districts.find(
+      (item) => item.name === districtName
     );
-    const filteredUpazila = upazila.filter(
-      item => item.district_id == Number(districtId) + 1
-    );
-    console.log(filteredUpazila);
-    setUpazila(filteredUpazila);
+
+    if (selectedDistrict) {
+      const filteredUpazilas = upazilas.filter(
+        (item) => item.district_id === selectedDistrict.id // Ensure matching IDs
+      );
+      setSelectedUpazilas(filteredUpazilas);
+    } else {
+      setSelectedUpazilas([]);
+    }
   };
 
   const handleSubmit = async e => {
@@ -149,54 +161,53 @@ function CreateDonationReq() {
                 className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
               />
             </div>
-            <div className="relative mt-4">
-              <select
-                name="recipientDistrict"
-                required
-                onBlur={handleSelectDistrict}
-                className="block w-full pl-4 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+           
+
+              <div className="relative mt-4" style={style}>
+              <label
+                className="block text-blueGray-600 text-xs font-bold mb-2"
+                htmlFor="recipientDistrict"
               >
-                <option value="" defaultValue="">
-                  Select District Name
-                </option>
-                {district.map(item => (
-                  <option key={item.id} value={item.bn_name}>
-                    {item.bn_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="relative mt-4">
-              <select
-                name="recipientUpazila"
-                required
-                className="block w-full pl-4 py-3   text-gray-950  bg-white border border-gray-300 rounded-lg      dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              >
-                <option value="" defaultValue="">
-                  Select Upazila Name
-                </option>
-                {upazila.map(item => (
-                  <option key={item.id} value={item.bn_name}>
-                    {item.bn_name}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6 text-gray-300 dark:text-gray-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                District
+              </label>
+                <select
+                  name="recipientDistrict"
+                  required
+                  onChange={handleSelectDistrict} // Use onChange instead of onBlur
+                  className="block w-full pl-4 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                  <option value="">Select District Name</option>
+                  {districts.map((item) => (
+                    <option key={item.id} value={item.name}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
               </div>
-            </div>
+
+
+              <div className="relative mt-4" style={style}>
+              <label
+                className="block text-blueGray-600 text-xs font-bold mb-2"
+                htmlFor="recipientUpazila"
+              >
+                Upazila
+              </label>
+                <select
+                  name="recipientUpazila"
+                  required
+                  className="block w-full pl-4 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg"
+                >
+                  <option value="">Select Upazila Name</option>
+                  {selectedUpazilas.map((item) => (
+                    <option key={item.id} value={item.name}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            
+
             <div className="relative w-full mb-3">
               <label
                 className="block text-blueGray-600 text-xs font-bold mb-2"

@@ -1,13 +1,16 @@
 import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../Firebase/AuthProvider';
+import { toast } from 'react-hot-toast';
 
 function Profile() {
   const { user } = useContext(AuthContext);
   const [userData, setUserData] = useState({});
   const [editable, setEditable] = useState(false);
-  const [district, setDistrict] = useState([]);
-  const [upazila, setUpazila] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [upazila, setUpazilas] = useState([]);
+  const [allUpazilas, setAllUpazilas] = useState([]); // Store all upazilas
+  const [filteredUpazilas, setFilteredUpazilas] = useState([]); // Filtered upazilas
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -19,7 +22,7 @@ function Profile() {
           setUserData(data[0]);
         }
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        toast.error('Error fetching user data:', error);
       }
     };
 
@@ -28,25 +31,43 @@ function Profile() {
     }
   }, [user?.email]);
 
-  useEffect(() => {
+   // Fetch Districts
+   useEffect(() => {
     (async () => {
-      const res = await fetch('/districts.json');
+      const res = await fetch("/districts.json");
       const data = await res.json();
-      setDistrict(data[2].data);
+      setDistricts(data[2].data.sort((a, b) => a.name.localeCompare(b.name)));
     })();
   }, []);
 
+  // Fetch Upazilas
   useEffect(() => {
     (async () => {
-      const res = await fetch('/upazilas.json');
+      const res = await fetch("/upazilas.json");
       const data = await res.json();
-      setUpazila(data[2].data);
+      setAllUpazilas(data[2].data);
     })();
   }, []);
 
-  const handleChange = e => {
+  // Filter Upazilas based on selected district
+  useEffect(() => {
+    if (userData.district) {
+      const selectedDistrict = districts.find((d) => d.name === userData.district);
+      if (selectedDistrict) {
+        const filtered = allUpazilas.filter(
+          (u) => u.district_id === selectedDistrict.id
+        );
+        setFilteredUpazilas(filtered);
+      }
+    } else {
+      setFilteredUpazilas([]);
+    }
+  }, [userData.district, allUpazilas]);
+
+  // Handle Input Changes
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserData(prevData => ({
+    setUserData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
@@ -73,10 +94,10 @@ function Profile() {
         `https://life-sync-server.vercel.app/users/${user?.email}`,
         UpdatedUserData
       );
-      console.log('Updated user data:', response.data);
+      toast.success('User data have been updated');
       setEditable(false);
     } catch (error) {
-      console.error('Error updating user data:', error);
+      toast.error('Error updating user data');
     }
   };
 
@@ -164,21 +185,21 @@ function Profile() {
                 District
               </label>
               <select
-                name="district"
-                id="district"
-                required
-                value={userData.district || ''}
-                onChange={handleChange}
-                disabled={!editable}
-                className="block w-full px-36 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              >
-                <option value="">Select District Name</option>
-                {district.map(item => (
-                  <option key={item.id} value={item.bn_name}>
-                    {item.bn_name}
-                  </option>
-                ))}
-              </select>
+            name="district"
+            id="district"
+            required
+            value={userData.district || ""}
+            onChange={handleChange}
+            disabled={!editable}
+            className="block w-full px-36 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+          >
+            <option value="">Select District Name</option>
+            {districts.map((item) => (
+              <option key={item.id} value={item.name}>
+                {item.name}
+              </option>
+            ))}
+          </select>
             </div>
           </div>
           <div className="w-full lg:w-6/12 px-4">
@@ -190,22 +211,21 @@ function Profile() {
                 Upazila
               </label>
               <select
-                name="upazila"
-                id="upazila"
-                placeholder="Upazila"
-                value={userData.upazila || ''}
-                onChange={handleChange}
-                disabled={!editable}
-                required
-                className="block w-full px-36 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-              >
-                <option value="">Select Upazila</option>
-                {upazila.map(item => (
-                  <option key={item.id} value={item.bn_name}>
-                    {item.bn_name}
-                  </option>
-                ))}
-              </select>
+            name="upazila"
+            id="upazila"
+            value={userData.upazila || ""}
+            onChange={handleChange}
+            disabled={!editable || !userData.district}
+            required
+            className="block w-full px-36 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+          >
+            <option value="">Select Upazila</option>
+            {filteredUpazilas.map((item) => (
+              <option key={item.id} value={item.name}>
+                {item.name}
+              </option>
+            ))}
+          </select>
             </div>
           </div>
           {/* Blood Group Select */}

@@ -8,8 +8,19 @@ function DonationRequestEdit() {
   const { user } = useContext(AuthContext);
   const { _id } = useParams();
   const [detailsData, setDetailsData] = useState([]);
+  const [district, setDistrict] = useState([]);
+  const [upazila, setUpazila] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [filteredUpazila, setFilteredUpazila] = useState([]);
+  const [selectedUpazila, setSelectedUpazila] = useState('');
   const [control, setControl] = useState(false);
   const navigate = useNavigate();
+
+  const style = {
+
+    fontSize: 14
+  };
+
   useEffect(() => {
     (async () => {
       const response = await axios.get(
@@ -20,36 +31,68 @@ function DonationRequestEdit() {
     })();
   }, [control, _id]);
   const [data] = detailsData;
-  console.log(data);
-  const [district, setDistrict] = useState([]);
-  const [upazila, setUpazila] = useState([]);
+
   useEffect(() => {
     (async () => {
       const res = await fetch('/districts.json');
       const data = await res.json();
-      setDistrict(data[2].data);
+      const sortedDistricts = data[2].data.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+      setDistrict(sortedDistricts);
     })();
   }, []);
+  
   useEffect(() => {
     (async () => {
       const res = await fetch('/upazilas.json');
       const data = await res.json();
-      setUpazila(data[2].data);
+      const sortedUpazilas = data[2].data.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+      setUpazila(sortedUpazilas);
     })();
   }, []);
+  
 
-  const handleSelectDistrict = e => {
-    console.log('district selected', e.target.value);
-    const districtName = e.target.value;
-    const districtId = district.findIndex(
-      item => item.bn_name === districtName
-    );
-    const filteredUpazila = upazila.filter(
-      item => item.district_id == Number(districtId) + 1
-    );
-    console.log(filteredUpazila);
-    setUpazila(filteredUpazila);
+
+  useEffect(() => {
+    if (data?.recipientDistrict && !selectedDistrict) {
+      setSelectedDistrict(data.recipientDistrict);
+      filterUpazilaList(data.recipientDistrict, data.recipientUpazila);
+    }
+  }, [data, district, upazila]);
+  
+  const filterUpazilaList = (districtName, upazilaName = '') => {
+    const districtObj = district.find((item) => item.name === districtName);
+    if (districtObj) {
+      const filteredList = upazila.filter(
+        (item) => item.district_id === districtObj.id
+      );
+      setFilteredUpazila(filteredList);
+      if (upazilaName) {
+        setSelectedUpazila(upazilaName);
+      }
+    }
   };
+  
+
+
+  const handleSelectDistrict = (e) => {
+    const districtName = e.target.value;
+    setSelectedDistrict(districtName);
+    setSelectedUpazila(''); // Reset upazila when district changes
+    filterUpazilaList(districtName);
+  };
+  
+
+ 
+  const handleSelectUpazila = (e) => {
+    setSelectedUpazila(e.target.value);
+  };
+
+
+
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -143,53 +186,54 @@ function DonationRequestEdit() {
             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
           />
         </div>
-        <div className="relative mt-4">
+        <div className="relative mt-4" style={style}>
+        <label
+            className="block text-blueGray-600 text-xs font-bold mb-2"
+            htmlFor="recipientDistrict"
+          >
+            District
+            </label>
           <select
             name="recipientDistrict"
             required
-            onBlur={handleSelectDistrict}
-            className="block w-full pl-4 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+            value={selectedDistrict}
+            onChange={handleSelectDistrict}
+            className="block w-full pl-4 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg"
+          
           >
-            <option defaultValue={data?.recipientDistrict}>
+            <option value="" disabled>
               Select District Name
             </option>
-            {district.map(item => (
-              <option key={item.id} value={item.bn_name}>
-                {item.bn_name}
+            {district.map((item) => (
+              <option key={item.id} value={item.name}>
+                {item.name}
               </option>
             ))}
           </select>
         </div>
-        <div className="relative mt-4">
+        <div className="relative mt-4" style={style}>
+        <label
+            className="block text-blueGray-600 text-xs font-bold mb-2"
+            htmlFor="recipientUpazila"
+          >
+           Upazila
+            </label>
           <select
             name="recipientUpazila"
             required
-            className="block w-full pl-4 py-3   text-gray-950  bg-white border border-gray-300 rounded-lg      dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+            value={selectedUpazila}
+            onChange={handleSelectUpazila}
+            className="block w-full pl-4 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg"
           >
-            <option value="" defaultValue={data?.recipientUpazila}>
+            <option value="" disabled>
               Select Upazila Name
             </option>
-            {upazila.map(item => (
-              <option key={item.id} value={item.bn_name}>
-                {item.bn_name}
+            {filteredUpazila.map((item) => (
+              <option key={item.id} value={item.name}>
+                {item.name}
               </option>
             ))}
           </select>
-          <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6 text-gray-300 dark:text-gray-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </div>
         </div>
         <div className="relative w-full mb-3">
           <label

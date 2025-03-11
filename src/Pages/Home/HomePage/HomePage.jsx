@@ -14,8 +14,8 @@ function HomePage() {
       />
       <BloodDonationFeatured />
       <ContactUs
-        contactNumber="01710101984"
-        emailAddress="asadulimran1999@gmail.com"
+        contactNumber="01754659997"
+        emailAddress="rhosnain@gmail.com"
       />
     </>
   );

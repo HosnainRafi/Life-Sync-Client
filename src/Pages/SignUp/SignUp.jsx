@@ -7,35 +7,46 @@ import axios from 'axios';
 // import logo from '../../assets/images/logo.png';
 
 function SignUp() {
-  const { createUser, setUser, updateUserProfile } = useContext(AuthContext);
+  const { createUser, setUser, updateUserProfile,user } = useContext(AuthContext);
   const [district, setDistrict] = useState([]);
   const [upazila, setUpazila] = useState([]);
+  const [allUpazilas, setAllUpazilas] = useState([]); // Store all upazilas
   const [error, setError] = useState('');
   const navigate = useNavigate();
   useEffect(() => {
     (async () => {
-      const res = await fetch('/districts.json');
+      const res = await fetch("/districts.json");
       const data = await res.json();
-      setDistrict(data[2].data);
-    })();
-  }, []);
-  useEffect(() => {
-    (async () => {
-      const res = await fetch('/upazilas.json');
-      const data = await res.json();
-      setUpazila(data[2].data);
+      const sortedDistricts = data[2].data.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+      setDistrict(sortedDistricts);
     })();
   }, []);
 
-  const handleSelectDistrict = e => {
-    console.log('district selected', e.target.value);
+  useEffect(() => {
+    (async () => {
+      const res = await fetch("/upazilas.json");
+      const data = await res.json();
+      const sortedUpazilas = data[2].data.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+      setAllUpazilas(sortedUpazilas); // Store the full list separately
+      setUpazila(sortedUpazilas);
+    })();
+  }, []);
+
+  const handleSelectDistrict = (e) => {
+    console.log("district selected", e.target.value);
     const districtName = e.target.value;
-    const districtId = district.findIndex(
-      item => item.bn_name === districtName
+
+    const selectedDistrict = district.find((item) => item.name === districtName);
+    if (!selectedDistrict) return;
+
+    const filteredUpazila = allUpazilas.filter(
+      (item) => item.district_id === selectedDistrict.id
     );
-    const filteredUpazila = upazila.filter(
-      item => item.district_id == Number(districtId) + 1
-    );
+
     console.log(filteredUpazila);
     setUpazila(filteredUpazila);
   };
@@ -72,7 +83,7 @@ function SignUp() {
         console.log(photoURL);
       }
     } catch (error) {
-      console.log(error.message);
+      toast.error(`${error.message}`);
     }
 
     const user = {
@@ -102,9 +113,9 @@ function SignUp() {
               toast.success('Successfully Created Account!');
               navigate('/');
             })
-            .catch(err => console.log(err));
+            .catch(err => toast.error(`${error.message}`));
         })
-        .catch(error => console.log(error.message));
+        .catch(error => toast.error(`${error.message}`));
     }
   };
 
@@ -257,8 +268,8 @@ function SignUp() {
                       Select District Name
                     </option>
                     {district.map(item => (
-                      <option key={item.id} value={item.bn_name}>
-                        {item.bn_name}
+                      <option key={item.id} value={item.name}>
+                        {item.name}
                       </option>
                     ))}
                   </select>
@@ -275,8 +286,8 @@ function SignUp() {
                       Select Upazila Name
                     </option>
                     {upazila.map(item => (
-                      <option key={item.id} value={item.bn_name}>
-                        {item.bn_name}
+                      <option key={item.id} value={item.name}>
+                        {item.name}
                       </option>
                     ))}
                   </select>
@@ -360,13 +371,13 @@ function SignUp() {
                 </button>
 
                 <div className="mt-6 text-center ">
-                  <Link
-                    to="/signin"
-                    className="text-sm text-gray-800  dark:text-blue-400"
-                  >
-                    Already have an account?{' '}
-                    <span className="hover:underline">Log In</span>
-                  </Link>
+                {user ? (
+        <p className="text-sm text-red-500">You are already logged in.</p>
+      ) : (
+        <Link to="/signin" className="text-sm text-gray-800 dark:text-blue-400">
+          Already have an account? <span className="hover:underline">Log In</span>
+        </Link>
+      )}
                 </div>
               </div>
             </form>
