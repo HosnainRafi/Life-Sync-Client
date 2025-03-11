@@ -6,8 +6,8 @@ Blood Donation Application is designed to streamline the process of blood donati
 **Live site URL**: [https://life-sync-bd.web.app/](https://life-sync-bd.web.app/)
 
 ### Admin Access
-- **Username**: asad@gmail.com
-- **Password**: asad.emran
+- **Username**: rhosnain100@gmail.com
+- **Password**: test1234
 
 ## Key Features
 1. **User-Friendly Interface**: Easy navigation and responsive design for desktop, tablet, and mobile devices.
