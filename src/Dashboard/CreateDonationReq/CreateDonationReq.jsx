@@ -55,6 +55,7 @@ function CreateDonationReq() {
     const form = e.target;
     const recipientName = form.recipientName.value;
     const bloodGroup = form.bloodGroup.value;
+    const phoneNumber = form.phoneNumber.value;
     const recipientDistrict = form.recipientDistrict.value;
     const recipientUpazila = form.recipientUpazila.value;
     const hospitalName = form.hospitalName.value;
@@ -66,6 +67,7 @@ function CreateDonationReq() {
     const donationRequest = {
       recipientName,
       bloodGroup,
+      phoneNumber,
       recipientDistrict,
       recipientUpazila,
       hospitalName,
@@ -160,6 +162,22 @@ function CreateDonationReq() {
                 id="name"
                 required
                 placeholder="Name"
+                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              />
+            </div>
+            <div className="relative w-full mb-3">
+              <label
+                className="block text-blueGray-600 text-xs font-bold mb-2"
+                htmlFor="recipientName"
+              >
+                Phone number
+              </label>
+              <input
+                type="tel"
+                name="phoneNumber"
+                id="phoneNumber"
+                required
+                placeholder="Phone Number"
                 className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
               />
             </div>

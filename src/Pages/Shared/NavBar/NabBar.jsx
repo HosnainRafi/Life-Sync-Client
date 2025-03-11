@@ -52,9 +52,10 @@ function NavBar() {
         >
           <ul className="flex flex-col items-center mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
             {[
+              { to: '/search', label: 'Search Donor' },
               { to: '/donation-request', label: 'Donation Requests' },
               { to: '/blog', label: 'Blog' },
-              { to: '/funding', label: 'Funding' },
+              // { to: '/funding', label: 'Funding' },
             ].map(link => (
               <li key={link.to}>
                 <NavLink

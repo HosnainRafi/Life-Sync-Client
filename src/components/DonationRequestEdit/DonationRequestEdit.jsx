@@ -10,6 +10,7 @@ function DonationRequestEdit() {
   const [detailsData, setDetailsData] = useState([]);
   const [district, setDistrict] = useState([]);
   const [upazila, setUpazila] = useState([]);
+  const [selectedBloodGroup, setSelectedBloodGroup] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [filteredUpazila, setFilteredUpazila] = useState([]);
   const [selectedUpazila, setSelectedUpazila] = useState('');
@@ -23,13 +24,18 @@ function DonationRequestEdit() {
 
   useEffect(() => {
     (async () => {
-      const response = await axios.get(
-        `http://localhost:5000/donation-requests/view-details/${_id}`
-      );
-      setDetailsData(response.data);
-      setControl(!control);
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/donation-requests/view-details/${_id}`
+        );
+        setDetailsData(response.data);
+        setSelectedBloodGroup(response.data?.bloodGroup || ""); // Ensure it sets the value properly
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     })();
-  }, [control, _id]);
+  }, [_id]);
+  
   const [data] = detailsData;
 
   useEffect(() => {
@@ -54,7 +60,9 @@ function DonationRequestEdit() {
     })();
   }, []);
   
-
+  const handleBloodGroupChange = (e) => {
+    setSelectedBloodGroup(e.target.value);
+  };
 
   useEffect(() => {
     if (data?.recipientDistrict && !selectedDistrict) {
@@ -98,6 +106,8 @@ function DonationRequestEdit() {
     e.preventDefault();
     const form = e.target;
     const recipientName = form.recipientName.value;
+    const bloodGroup = form.bloodGroup.value;
+    const phoneNumber = form.phoneNumber.value;
     const recipientDistrict = form.recipientDistrict.value;
     const recipientUpazila = form.recipientUpazila.value;
     const hospitalName = form.hospitalName.value;
@@ -108,6 +118,8 @@ function DonationRequestEdit() {
     const email = user?.email;
     const donationRequest = {
       recipientName,
+      bloodGroup,
+      phoneNumber,
       recipientDistrict,
       recipientUpazila,
       hospitalName,
@@ -186,6 +198,53 @@ function DonationRequestEdit() {
             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
           />
         </div>
+
+        <div className="relative w-full mb-3">
+              <label
+                className="block text-blueGray-600 text-xs font-bold mb-2"
+                htmlFor="recipientName"
+              >
+                Phone number
+              </label>
+              <input
+                type="tel"
+                name="phoneNumber"
+                id="phoneNumber"
+                defaultValue={data?.recipientName}
+                required
+                placeholder="Phone Number"
+                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              />
+            </div>
+            
+            <div className="relative w-full mb-3" style={style}>
+              <label
+                className="block text-blueGray-600 text-xs font-bold mb-2"
+                htmlFor="bloodGroup"
+              >
+                Blood Group
+              </label>
+              <select
+      name="bloodGroup"
+      id="bloodGroup"
+      required
+      className="block w-full pl-4 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg"
+      value={selectedBloodGroup} // Ensuring the value is set correctly
+      onChange={handleBloodGroupChange} 
+    >
+      <option value="">Select Blood Group</option>
+      <option value="A+">A+</option>
+      <option value="A-">A-</option>
+      <option value="B+">B+</option>
+      <option value="B-">B-</option>
+      <option value="AB+">AB+</option>
+      <option value="AB-">AB-</option>
+      <option value="O+">O+</option>
+      <option value="O-">O-</option>
+    </select>
+            </div>
+
+        
         <div className="relative mt-4" style={style}>
         <label
             className="block text-blueGray-600 text-xs font-bold mb-2"
