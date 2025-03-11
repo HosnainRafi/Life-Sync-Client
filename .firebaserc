@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "life-sync-bd"
-  }
+    "default": "life-sync-fab40",
+    "firebase use default": "life-sync-fab40"
+  },
+  "targets": {},
+  "etags": {}
 }

@@ -64,7 +64,7 @@ const [selectedDistrictName, setSelectedDistrictName] = useState("");
   const handleSearch = async e => {
     e.preventDefault();
     const { data } = await axios.get(
-      'http://localhost:5000/donors',
+      'https://lifesyncserver2.vercel.app/donors',
       {
         params: {
           bloodGroup,
@@ -78,7 +78,7 @@ const [selectedDistrictName, setSelectedDistrictName] = useState("");
 
   return (
     <div className="container mx-auto my-10">
-      <h2 className="text-3xl font-semibold mb-6">Search Donors</h2>
+      <h2 className="text-3xl font-semibold mb-6">Search Donation Listings</h2>
       <form onSubmit={handleSearch} className="space-y-4">
         <div>
           <label

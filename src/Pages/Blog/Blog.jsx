@@ -7,7 +7,7 @@ function Blog() {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/blog-post/status`
+        `https://lifesyncserver2.vercel.app/blog-post/status`
       );
       setBlogPost(data);
     })();

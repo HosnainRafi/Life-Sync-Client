@@ -9,7 +9,7 @@ function DonationViewDetails() {
   useEffect(() => {
     (async () => {
       const response = await axios.get(
-        `http://localhost:5000/donation-requests/view-details/${_id}`
+        `https://lifesyncserver2.vercel.app/donation-requests/view-details/${_id}`
       );
       setDetailsData(response.data);
       setControl(!control);

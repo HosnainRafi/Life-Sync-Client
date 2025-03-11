@@ -15,25 +15,31 @@ function Board() {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/users/${user?.email}`
+        `https://lifesyncserver2.vercel.app/users/${user?.email}`
       );
       setUserData(data[0]);
     })();
   }, [user?.email]);
   useEffect(() => {
     (async () => {
-      const { data } = await axios.get(
-        `http://localhost:5000/donation-requests/${user?.email}`
-      );
-      setRealData(data);
-      const filteredData = data.slice(0, 3);
-      setMyDonationReq(filteredData);
+      if (!user?.email) return; // Ensure email exists before making the request
+
+      try {
+        const { data } = await axios.get(
+          `https://lifesyncserver2.vercel.app/donation-requests/donor/${user?.email}`
+        );
+        setRealData(data);
+        setMyDonationReq(data.slice(0, 3)); // Take only the first 3 records
+      } catch (error) {
+        console.error("Error fetching donation requests:", error);
+      }
     })();
   }, [control, user?.email]);
 
+
   const handleDone = async id => {
     const response = await axios.patch(
-      `http://localhost:5000/donation-requests/done/${id}`
+      `https://lifesyncserver2.vercel.app/donation-requests/done/${id}`
     );
     if (response.data.modifiedCount) {
       Swal.fire('Successful updated Status to Done');
@@ -42,7 +48,7 @@ function Board() {
   };
   const handleCancel = async id => {
     const response = await axios.patch(
-      `http://localhost:5000/donation-requests/cancel/${id}`
+      `https://lifesyncserver2.vercel.app/donation-requests/cancel/${id}`
     );
     if (response.data.modifiedCount) {
       Swal.fire('Successful Cancel Request');
@@ -61,7 +67,7 @@ function Board() {
     }).then(async result => {
       if (result.isConfirmed) {
         const response = await axios.delete(
-          `http://localhost:5000/donation-requests/${id}`
+          `https://lifesyncserver2.vercel.app/donation-requests/${id}`
         );
         if (response.data.deletedCount) {
           Swal.fire('Successful Deleted Request');
@@ -113,20 +119,20 @@ function Board() {
                       <td>
                         {' '}
                         {donation?.status == 'inprogress' ? (
-                          <>
+                          <div className='flex item-center gap-2'>
                             <button
                               onClick={() => handleDone(donation?._id)}
-                              className="btn btn-primary mr-2"
+                              className="btn btn-primary btn-sm mr-2"
                             >
                               Done
                             </button>
                             <button
                               onClick={() => handleCancel(donation?._id)}
-                              className="btn btn-secondary"
+                              className="btn btn-sm btn-secondary"
                             >
                               Cancel
                             </button>
-                          </>
+                          </div>
                         ) : null}{' '}
                       </td>
                       <td>

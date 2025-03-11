@@ -23,7 +23,7 @@ const Banner = ({ title, subtitle, image, buttonText1, buttonText2 }) => {
               {buttonText1}
             </Link>
             <Link
-              to="/search"
+              to="/donation-request"
               className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out"
             >
               {buttonText2}

@@ -14,7 +14,7 @@ function ContentManagement() {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/users/${user?.email}`
+        `https://lifesyncserver2.vercel.app/users/${user?.email}`
       );
       setUserData(data[0]);
     })();
@@ -23,7 +23,7 @@ function ContentManagement() {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/blog-post`
+        `https://lifesyncserver2.vercel.app/blog-post`
       );
       setBlogPost(data);
     })();
@@ -31,7 +31,7 @@ function ContentManagement() {
 
   const handlePublish = async id => {
     const response = await axios.patch(
-      `http://localhost:5000/blog-post/publish/${id}`
+      `https://lifesyncserver2.vercel.app/blog-post/publish/${id}`
     );
     if (response.data.modifiedCount) {
       Swal.fire('Successfully updated status to Publish');
@@ -41,7 +41,7 @@ function ContentManagement() {
 
   const handleUnPublish = async id => {
     const response = await axios.patch(
-      `http://localhost:5000/blog-post/unpublished/${id}`
+      `https://lifesyncserver2.vercel.app/blog-post/unpublished/${id}`
     );
     if (response.data.modifiedCount) {
       Swal.fire('Successfully updated status to Draft');
@@ -51,7 +51,7 @@ function ContentManagement() {
 
   const handleDelete = async id => {
     const response = await axios.delete(
-      `http://localhost:5000/blog-post/delete/${id}`
+      `https://lifesyncserver2.vercel.app/blog-post/delete/${id}`
     );
     if (response.data.deletedCount) {
       Swal.fire('Successfully deleted the blog post');

@@ -1,9 +1,12 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../Firebase/AuthProvider';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
+
 function ViewDetails() {
+  const { user } = useContext(AuthContext);
   const [donationRequestSingleData, setDonationRequestSingleData] = useState(
     []
   );
@@ -12,12 +15,14 @@ function ViewDetails() {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/donation-requests/single/${_id}`
+        `https://lifesyncserver2.vercel.app/donation-requests/single/${_id}`
       );
       setDonationRequestSingleData(data);
     })();
   }, [_id, control]);
   console.log(donationRequestSingleData)
+
+
   const handleDonate = () => {
     Swal.fire({
       title: 'Want to Donate?',
@@ -29,16 +34,24 @@ function ViewDetails() {
       confirmButtonText: 'Yes, I want to Donate!',
     }).then(async result => {
       if (result.isConfirmed) {
-        const response = await axios.patch(
-          `http://localhost:5000/donation-requests/single-update/${_id}`
-        );
-        if (response.data.modifiedCount) {
-          Swal.fire('Successful updated Status');
-          setControl(!control);
+        try {
+          const response = await axios.patch(
+            `https://lifesyncserver2.vercel.app/donation-requests/single-update/${_id}`,
+            { donorsEmail: user.email } // Send user email in request body
+          );
+  
+          if (response.data.modifiedCount) {
+            Swal.fire('Successfully updated status');
+            setControl(!control);
+          }
+        } catch (error) {
+          Swal.fire('Error', 'Failed to update status', 'error');
+          console.error('Error updating donation status:', error);
         }
       }
     });
   };
+  
 
   
   return (

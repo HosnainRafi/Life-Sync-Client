@@ -80,7 +80,7 @@ function CreateDonationReq() {
     };
     try {
       const res = await axios.post(
-        'http://localhost:5000/donation-requests',
+        'https://lifesyncserver2.vercel.app/donation-requests',
         donationRequest
       );
       console.log(res);
@@ -96,7 +96,7 @@ function CreateDonationReq() {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/users/${user?.email}`
+        `https://lifesyncserver2.vercel.app/users/${user?.email}`
       );
       setUserData(data[0]);
     })();

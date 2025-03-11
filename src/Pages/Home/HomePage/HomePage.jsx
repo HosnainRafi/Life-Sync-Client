@@ -10,7 +10,7 @@ function HomePage() {
         subtitle="Be a hero, donate blood today"
         image="https://i.postimg.cc/QN7b68ms/mt-1802-slider-img02.jpg"
         buttonText1="Join as a donor"
-        buttonText2="Search Donors"
+        buttonText2="Find & Help People in Need"
       />
       <BloodDonationFeatured />
       <ContactUs

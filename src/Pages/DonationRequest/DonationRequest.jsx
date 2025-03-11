@@ -9,7 +9,7 @@ function DonationRequest() {
     (async () => {
       const status = "pending";
       const { data } = await axios.get(
-        `http://localhost:5000/donation-requests/home/${status}`
+        `https://lifesyncserver2.vercel.app/donation-requests/home/${status}`
       );
       setDonationRequest(data);
     })();
@@ -17,9 +17,9 @@ function DonationRequest() {
 
   return (
     <div className="my-12 lg:my-20">
-      <h2 className="text-4xl lg:text-5xl font-semibold lg:font-bold text-center mb-4 lg:mb-6">
-        Donation Request Page
+      <h2 className="text-3xl font-semibold mb-6">Donation Request Page
       </h2>
+        
 
       {donationRequest.length > 0 ? (
         <div className="overflow-x-auto">
