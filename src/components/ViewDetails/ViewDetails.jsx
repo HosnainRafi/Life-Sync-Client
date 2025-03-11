@@ -12,7 +12,7 @@ function ViewDetails() {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `https://life-sync-server.vercel.app/donation-requests/single/${_id}`
+        `http://localhost:5000/donation-requests/single/${_id}`
       );
       setDonationRequestSingleData(data);
     })();
@@ -30,7 +30,7 @@ console.log(donationRequestSingleData)
     }).then(async result => {
       if (result.isConfirmed) {
         const response = await axios.patch(
-          `https://life-sync-server.vercel.app/donation-requests/single-update/${_id}`
+          `http://localhost:5000/donation-requests/single-update/${_id}`
         );
         if (response.data.modifiedCount) {
           Swal.fire('Successful updated Status');

@@ -100,7 +100,7 @@ function SignUp() {
     };
     console.log(user);
     const { data } = await axios.post(
-      `https://life-sync-server.vercel.app/users`,
+      `http://localhost:5000/users`,
       user
     );
     console.log(data);

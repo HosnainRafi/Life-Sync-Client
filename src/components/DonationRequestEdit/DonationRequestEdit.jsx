@@ -24,7 +24,7 @@ function DonationRequestEdit() {
   useEffect(() => {
     (async () => {
       const response = await axios.get(
-        `https://life-sync-server.vercel.app/donation-requests/view-details/${_id}`
+        `http://localhost:5000/donation-requests/view-details/${_id}`
       );
       setDetailsData(response.data);
       setControl(!control);
@@ -120,7 +120,7 @@ function DonationRequestEdit() {
     };
     try {
       const res = await axios.patch(
-        `https://life-sync-server.vercel.app/donation-requests/edit/${_id}`,
+        `http://localhost:5000/donation-requests/edit/${_id}`,
         donationRequest
       );
       if (res.data.modifiedCount) {
