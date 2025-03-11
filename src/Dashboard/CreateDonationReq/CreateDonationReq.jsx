@@ -36,13 +36,13 @@ function CreateDonationReq() {
 
   const handleSelectDistrict = (e) => {
     const districtName = e.target.value;
-    setDistricts(districtName); // Store the district name
-  
-    const selectedDistrictObj = districts.find((item) => item.name === districtName);
-  
-    if (selectedDistrictObj) {
+    const selectedDistrict = districts.find(
+      (item) => item.name === districtName
+    );
+
+    if (selectedDistrict) {
       const filteredUpazilas = upazilas.filter(
-        (item) => item.district_id === selectedDistrictObj.id // Ensure matching IDs
+        (item) => item.district_id === selectedDistrict.id // Ensure matching IDs
       );
       setSelectedUpazilas(filteredUpazilas);
     } else {
@@ -198,18 +198,18 @@ function CreateDonationReq() {
                 District
               </label>
               <select
-      name="recipientDistrict"
-      required
-      onChange={handleSelectDistrict} // Use onChange
-      className="block w-full pl-4 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg"
-    >
-      <option value="">Select District Name</option>
-      {districts.map((item) => (
-        <option key={item.id} value={item.name}>
-          {item.name}
-        </option>
-      ))}
-    </select>
+                name="recipientDistrict"
+                required
+                onChange={handleSelectDistrict} // Use onChange instead of onBlur
+                className="block w-full pl-4 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg"
+              >
+                <option value="">Select District Name</option>
+                {districts.map((item) => (
+                  <option key={item.id} value={item.name}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
 
