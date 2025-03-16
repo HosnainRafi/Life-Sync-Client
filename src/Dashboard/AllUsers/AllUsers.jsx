@@ -88,99 +88,103 @@ function AllUsers() {
     ? userData.filter(user => user.status === statusFilter)
     : userData;
 
-  return (
-    <div className="my-10">
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="status"
-        >
-          Filter by Status
-        </label>
-        <select
-          id="status"
-          value={statusFilter}
-          onChange={handleStatusChange}
-          className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-        >
-          <option value="">All</option>
-          <option value="active">Active</option>
-          <option value="block">Blocked</option>
-        </select>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="table">
-          {/* head */}
-          <thead>
-            <tr>
-              <th>Avatar</th>
-              <th>User Name</th>
-              <th>User Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Block</th>
-              <th>Unblock</th>
-              <th>Make Volunteer</th>
-              <th>Make Admin</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers?.map(item => (
-              <tr key={item._id}>
-                <td>
-                  <div className="mask mask-squircle w-12 h-12">
-                    <img src={item?.photoURL} alt="" />
-                  </div>
-                </td>
-                <td>{item?.name}</td>
-                <td>{item?.email}</td>
-                <td>{item?.role}</td>
-                <td>{item?.status}</td>
-                <td>
-                  <button
-                    onClick={() => handleBlock(item?._id, item?.status, item?.role)}
-                    className="btn btn-sm btn-active btn-error"
-                    disabled={item?.status === 'block' || item?.role === 'admin'} // Disable if already blocked or admin
-                  >
-                    Block
-                  </button>
-                </td>
-                <td>
-                  <button
-                    onClick={() => handleUnBlock(item?._id, item?.status, item?.role)}
-                    className="btn btn-sm btn-active btn-primary"
-                    disabled={item?.status === 'active' || item?.role === 'admin'} // Disable if already active or admin
-                  >
-                    Unblock
-                  </button>
-                </td>
-
-
-                <td>
-                  <button
-                    onClick={() => handleVolunteer(item?._id, item?.role)}
-                    className="btn btn-sm btn-active btn-primary"
-                  >
-                    Volunteer
-                  </button>
-                </td>
-                <td>
-                  <button
-                    onClick={() => handleAdmin(item?._id, item?.role)}
-                    className="btn btn-sm btn-active btn-primary"
-                  >
-                    Admin
-                  </button>
-                </td>
+    return (
+      <div className="my-6 mx-4 sm:mx-6 md:mx-10">
+        {/* Filter by Status */}
+        <div className="mb-4 sm:mb-6">
+          <label
+            className="block text-gray-800 text-sm sm:text-lg font-medium mb-2"
+            htmlFor="status"
+          >
+            Filter by Status
+          </label>
+          <select
+            id="status"
+            value={statusFilter}
+            onChange={handleStatusChange}
+            className="block w-full bg-white border border-gray-300 rounded-lg shadow-sm px-3 py-2 sm:px-4 sm:py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base"
+          >
+            <option value="">All</option>
+            <option value="active">Active</option>
+            <option value="block">Blocked</option>
+          </select>
+        </div>
+    
+        {/* Table */}
+        <div className="overflow-x-auto shadow-lg rounded-lg bg-white">
+          <table className="min-w-full table-auto text-sm sm:text-base">
+            {/* Table Head */}
+            <thead className="bg-blue-600 text-white">
+              <tr>
+                <th className="px-2 py-3 sm:px-4">Avatar</th>
+                <th className="px-2 py-3 sm:px-4">User Name</th>
+                <th className="px-2 py-3 sm:px-4">User Email</th>
+                <th className="px-2 py-3 sm:px-4">Role</th>
+                <th className="px-2 py-3 sm:px-4">Status</th>
+                <th className="px-2 py-3 sm:px-4">Block</th>
+                <th className="px-2 py-3 sm:px-4">Unblock</th>
+                <th className="px-2 py-3 sm:px-4">Make Volunteer</th>
+                <th className="px-2 py-3 sm:px-4">Make Admin</th>
+                <th className="px-2 py-3 sm:px-4"></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            {/* Table Body */}
+            <tbody className="bg-gray-50 divide-y divide-gray-200">
+              {filteredUsers?.map(item => (
+                <tr key={item._id}>
+                  <td className="px-2 py-3 sm:px-4">
+                    <div className="mask mask-squircle w-10 h-10 sm:w-12 sm:h-12">
+                      <img src={item?.photoURL} alt={item?.name} />
+                    </div>
+                  </td>
+                  <td className="px-2 py-3 sm:px-4 text-gray-700">{item?.name}</td>
+                  <td className="px-2 py-3 sm:px-4 text-gray-700">{item?.email}</td>
+                  <td className="px-2 py-3 sm:px-4 text-gray-700">{item?.role}</td>
+                  <td className="px-2 py-3 sm:px-4 text-gray-700">{item?.status}</td>
+                  <td className="px-2 py-3 sm:px-4">
+                    <button
+                      onClick={() => handleBlock(item?._id, item?.status, item?.role)}
+                      className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-xs sm:text-sm"
+                      disabled={item?.status === 'block' || item?.role === 'admin'}
+                    >
+                      Block
+                    </button>
+                  </td>
+                  <td className="px-2 py-3 sm:px-4">
+                    <button
+                      onClick={() => handleUnBlock(item?._id, item?.status, item?.role)}
+                      className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-xs sm:text-sm"
+                      disabled={item?.status === 'active' || item?.role === 'admin'}
+                    >
+                      Unblock
+                    </button>
+                  </td>
+                  <td className="px-2 py-3 sm:px-4">
+                    <button
+                      onClick={() => handleVolunteer(item?._id, item?.role)}
+                      className="bg-indigo-500 text-white px-3 py-1 rounded-md hover:bg-indigo-600 text-xs sm:text-sm"
+                    >
+                      Volunteer
+                    </button>
+                  </td>
+                  <td className="px-2 py-3 sm:px-4">
+                    <button
+                      onClick={() => handleAdmin(item?._id, item?.role)}
+                      className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 text-xs sm:text-sm"
+                    >
+                      Admin
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  );
+    );
+    
+    
+    
 }
 
 export default AllUsers;

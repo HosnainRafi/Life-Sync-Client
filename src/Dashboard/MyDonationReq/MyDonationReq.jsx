@@ -71,9 +71,10 @@ function MyDonationReq() {
 
   return (
     <div className="my-10 lg:my-20 mx-4 lg:mx-10">
-      <div className="mb-4">
+      {/* Filter by Status */}
+      <div className="mb-6">
         <label
-          className="block text-gray-700 text-sm font-bold mb-2"
+          className="block text-gray-800 text-lg font-semibold mb-2"
           htmlFor="status"
         >
           Filter by Status
@@ -82,7 +83,7 @@ function MyDonationReq() {
           id="status"
           value={statusFilter}
           onChange={handleStatusChange}
-          className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+          className="block w-full bg-white border border-gray-300 rounded-lg shadow-sm px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">All</option>
           <option value="pending">Pending</option>
@@ -91,65 +92,87 @@ function MyDonationReq() {
           <option value="canceled">Canceled</option>
         </select>
       </div>
-
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Recipient Name</th>
-            <th>Recipient Location</th>
-            <th>Donation Date</th>
-            <th>Donation Time</th>
-            <th>Status</th>
-            <th>Edit</th>
-            <th>Delete</th>
-            <th>Details</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentDonations.map((item, index) => (
-            <tr key={item._id}>
-              <th>{index + 1 + (currentPage - 1) * donationsPerPage}</th>
-              <td>{item.recipientName}</td>
-              <td>{item.address}</td>
-              <td>{item.donationDate}</td>
-              <td>{item.donationTime}</td>
-              <td>{item.status}</td>
-              <td>
-                <Link to={`/dashboard/edit/${item._id}`}>
-                  <button className="btn btn-outline btn-primary btn-sm">
-                    Edit
-                  </button>
-                </Link>
-              </td>
-              <td>
-                <button
-                  onClick={() => handleDelete(item._id)}
-                  className="btn btn-error btn-sm"
-                >
-                  Delete
-                </button>
-              </td>
-              <td>
-                <Link to={`/dashboard/view-details/${item._id}`}>
-                  <button className="btn btn-outline btn-sm">Details</button>
-                </Link>
-              </td>
+  
+      {/* Table */}
+      <div className="overflow-x-auto shadow-md rounded-lg bg-white">
+        <table className="min-w-full table-auto">
+          <thead className="bg-blue-600 text-white">
+            <tr>
+              <th className="px-4 py-3 text-left">#</th>
+              <th className="px-4 py-3 text-left">Recipient Name</th>
+              <th className="px-4 py-3 text-left">Recipient Location</th>
+              <th className="px-4 py-3 text-left">Donation Date</th>
+              <th className="px-4 py-3 text-left">Donation Time</th>
+              <th className="px-4 py-3 text-left">Status</th>
+              <th className="px-4 py-3 text-left">Edit</th>
+              <th className="px-4 py-3 text-left">Delete</th>
+              <th className="px-4 py-3 text-left">Details</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div className="flex justify-center mt-4">
+          </thead>
+          <tbody className="bg-gray-50 divide-y divide-gray-200">
+            {currentDonations.map((item, index) => (
+              <tr key={item._id}>
+                <td className="px-4 py-3">{index + 1 + (currentPage - 1) * donationsPerPage}</td>
+                <td className="px-4 py-3">{item.recipientName}</td>
+                <td className="px-4 py-3">{item.address}</td>
+                <td className="px-4 py-3">{item.donationDate}</td>
+                <td className="px-4 py-3">{item.donationTime}</td>
+                <td className="px-4 py-3">
+                  <span
+                    className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${
+                      item.status === "pending"
+                        ? "bg-yellow-200 text-yellow-800"
+                        : item.status === "inprogress"
+                        ? "bg-blue-200 text-blue-800"
+                        : item.status === "done"
+                        ? "bg-green-200 text-green-800"
+                        : "bg-gray-200 text-gray-800"
+                    }`}
+                  >
+                    {item.status}
+                  </span>
+                </td>
+                <td className="px-4 py-3">
+                  <Link to={`/dashboard/edit/${item._id}`}>
+                    <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      Edit
+                    </button>
+                  </Link>
+                </td>
+                <td className="px-4 py-3">
+                  <button
+                    onClick={() => handleDelete(item._id)}
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  >
+                    Delete
+                  </button>
+                </td>
+                <td className="px-4 py-3">
+                  <Link to={`/dashboard/view-details/${item._id}`}>
+                    <button className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                      Details
+                    </button>
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+  
+      {/* Pagination */}
+      <div className="flex justify-center mt-6">
         {Array.from(
           { length: Math.ceil(filteredDonations.length / donationsPerPage) },
           (_, i) => (
             <button
               key={i}
               onClick={() => paginate(i + 1)}
-              className={`px-4 py-2 m-1 ${
-                currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'
-              }`}
+              className={`px-4 py-2 mx-1 rounded-lg ${
+                currentPage === i + 1
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-800"
+              } hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
             >
               {i + 1}
             </button>
@@ -158,6 +181,7 @@ function MyDonationReq() {
       </div>
     </div>
   );
+  
 }
 
 export default MyDonationReq;

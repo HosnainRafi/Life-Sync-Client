@@ -30,15 +30,15 @@ function BlogDetails() {
               <h1 className="text-3xl font-bold text-gray-800 mb-4">
                 {post.title}
               </h1>
-              <p className="text-gray-600 mb-4">
+              {/* <p className="text-gray-600 mb-4">
                 {new Date(post.date).toLocaleDateString()}
-              </p>
+              </p> */}
               <div
                 className="text-gray-700 mb-6"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               ></div>
               <div className="flex justify-between items-center border-t border-gray-300 pt-4 mt-4">
-                <p className="text-gray-500">By {post.author}</p>
+                <p className="text-gray-500">By {post.authorName}</p>
                 <p className="text-gray-500">
                   {new Date(post.createdAt).toLocaleDateString()}
                 </p>

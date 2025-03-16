@@ -20,11 +20,11 @@ function Blog() {
         <h1 className="text-4xl font-bold text-center text-gray-800 mb-12">
           Latest Blog Posts
         </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogPost?.map(post => (
             <div
               key={post?.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden"
+              className="bg-white rounded-lg shadow-lg overflow-hidden group relative"
             >
               <img
                 src={post?.photoURL}
@@ -32,17 +32,14 @@ function Blog() {
                 className="w-full h-64 object-cover"
               />
               <div className="p-6">
-                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4 group-hover:text-blue-500 transition-all duration-300 line-clamp-2">
                   {post?.title}
                 </h2>
-                <p className="text-gray-600 mb-4">
-                  {new Date(post?.date).toLocaleDateString()}
-                </p>
                 <div
-                  className="text-gray-700 mb-4"
+                  className="text-gray-700 mb-4 line-clamp-4" // Limit to 4 lines for description
                   dangerouslySetInnerHTML={{
-                    __html: `${post?.content.slice(0, 200)}${
-                      post?.content.length > 200 ? '...' : ''
+                    __html: `${post?.content.slice(0, 300)}${
+                      post?.content.length > 300 ? '...' : ''
                     }`,
                   }}
                 ></div>
@@ -62,6 +59,8 @@ function Blog() {
       </div>
     </div>
   );
+  
+  
 }
 
 export default Blog;

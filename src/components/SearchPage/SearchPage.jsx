@@ -42,9 +42,11 @@ const [selectedDistrictName, setSelectedDistrictName] = useState("");
   
     if (selectedDistrictObj) {
       setSelectedDistrictId(selectedDistrictObj.id); // Store ID for UI
-      setSelectedDistrictName(selectedDistrictObj.name); // Store Name for API
+      setSelectedDistrict(selectedDistrictObj.name); // Store Name for API (this is important)
+      setSelectedDistrictName(selectedDistrictObj.name); // Store Name for display if needed
     } else {
       setSelectedDistrictId("");
+      setSelectedDistrict("");
       setSelectedDistrictName("");
     }
   
@@ -61,20 +63,21 @@ const [selectedDistrictName, setSelectedDistrictName] = useState("");
 
 
 
-  const handleSearch = async e => {
+  const handleSearch = async (e) => {
     e.preventDefault();
     const { data } = await axios.get(
       'https://lifesyncserver2.vercel.app/donors',
       {
         params: {
           bloodGroup,
-          district: selectedDistrict,
+          district: selectedDistrict, // Now passing the district name
           upazila: selectedUpazila,
         },
       }
     );
     setDonors(data);
   };
+  
 
   return (
     <div className="container mx-auto my-10">
@@ -167,74 +170,51 @@ const [selectedDistrictName, setSelectedDistrictName] = useState("");
         {donors.length > 0 ? (
           <div>
             <h3 className="text-xl font-semibold mb-4">Donor Results</h3>
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Blood Group
-                  </th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    District
-                  </th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Upazila
-                  </th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Phone
-                  </th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Address
-                  </th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Details
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {donors.map(donor => (
-                  <tr key={donor.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {donor.recipientName}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {donor.bloodGroup}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {donor.recipientDistrict}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {donor.recipientUpazila}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {donor.phoneNumber}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {donor.status === "inprogress"
-                        ? "Request Accepted"
-                        : donor.status === "active"
-                          ? "Active"
-                          : donor.status === "done"
-                            ? "Donation Complete"
-                            : donor.status} {/* Fallback for unknown statuses */}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {donor.address}
-                    </td>
-                    <td>
-                      <Link to={`/view-details/${donor?._id}`}>
-                        <button style={{color: "white"}} className="btn btn-success">View Details</button>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="overflow-x-auto">
+  <table className="w-full min-w-max border-collapse bg-white shadow-md rounded-lg overflow-hidden">
+    <thead className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+      <tr>
+        <th className="px-4 py-3 text-left">Name</th>
+        <th className="px-4 py-3 text-left">Blood Group</th>
+        <th className="px-4 py-3 text-left">District</th>
+        <th className="px-4 py-3 text-left">Upazila</th>
+        <th className="px-4 py-3 text-left">Phone</th>
+        <th className="px-4 py-3 text-left">Status</th>
+        <th className="px-4 py-3 text-left">Address</th>
+        <th className="px-4 py-3 text-center">Details</th>
+      </tr>
+    </thead>
+    <tbody className="text-gray-700 text-sm">
+      {donors.map((donor) => (
+        <tr key={donor.id} className="border-b hover:bg-gray-50">
+          <td className="px-4 py-3 whitespace-nowrap">{donor.recipientName}</td>
+          <td className="px-4 py-3 whitespace-nowrap">{donor.bloodGroup}</td>
+          <td className="px-4 py-3 whitespace-nowrap">{donor.recipientDistrict}</td>
+          <td className="px-4 py-3 whitespace-nowrap">{donor.recipientUpazila}</td>
+          <td className="px-4 py-3 whitespace-nowrap">{donor.phoneNumber}</td>
+          <td className="px-4 py-3 whitespace-nowrap">
+            {donor.status === "inprogress"
+              ? "Request Accepted"
+              : donor.status === "active"
+              ? "Active"
+              : donor.status === "done"
+              ? "Donation Complete"
+              : donor.status}
+          </td>
+          <td className="px-4 py-3 whitespace-nowrap">{donor.address}</td>
+          <td className="px-4 py-3 text-center">
+            <Link to={`/view-details/${donor._id}`}>
+              <button className="px-3 py-2 text-white bg-green-600 hover:bg-green-700 rounded-lg text-xs font-semibold">
+                View Details
+              </button>
+            </Link>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
           </div>
         ) : (
           <p className="text-gray-500">
