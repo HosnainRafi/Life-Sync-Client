@@ -47,7 +47,7 @@ function AuthProvider({ children }) {
   //logOut
   const logOut = async () => {
     const { data } = await axios(
-      `https://hotel-hive-server.vercel.app/logout`,
+      `https://lifesyncserver2.vercel.app/logout`,
       { withCredentials: true }
     );
     console.log(data);
@@ -64,7 +64,7 @@ function AuthProvider({ children }) {
       if (currentUser) {
         const loggedUser = { email: currentUser.email };
         axios
-          .post('https://hotel-hive-server.vercel.app/jwt', loggedUser, {
+          .post('https://lifesyncserver2.vercel.app/jwt', loggedUser, {
             withCredentials: true,
           })
           .then(res => {
