@@ -16,7 +16,7 @@ function Profile() {
     const fetchUserData = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/users/${user?.email}`
+          `https://life-sync-server-eight.vercel.app/users/${user?.email}`
         );
         if (data && data.length > 0) {
           setUserData(data[0]);
@@ -91,7 +91,7 @@ function Profile() {
     console.log(UpdatedUserData);
     try {
       const response = await axios.patch(
-        `http://localhost:5000/users/${user?.email}`,
+        `https://life-sync-server-eight.vercel.app/users/${user?.email}`,
         UpdatedUserData
       );
       toast.success('User data have been updated');

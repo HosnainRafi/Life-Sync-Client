@@ -26,7 +26,7 @@ function DonationRequestEdit() {
     (async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/donation-requests/view-details/${_id}`
+          `https://life-sync-server-eight.vercel.app/donation-requests/view-details/${_id}`
         );
         setDetailsData(response.data);
         setSelectedBloodGroup(response.data?.bloodGroup || ""); // Ensure it sets the value properly
@@ -132,7 +132,7 @@ function DonationRequestEdit() {
     };
     try {
       const res = await axios.patch(
-        `http://localhost:5000/donation-requests/edit/${_id}`,
+        `https://life-sync-server-eight.vercel.app/donation-requests/edit/${_id}`,
         donationRequest
       );
       if (res.data.modifiedCount) {

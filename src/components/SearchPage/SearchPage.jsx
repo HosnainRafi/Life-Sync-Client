@@ -66,7 +66,7 @@ const [selectedDistrictName, setSelectedDistrictName] = useState("");
   const handleSearch = async (e) => {
     e.preventDefault();
     const { data } = await axios.get(
-      'http://localhost:5000/donors',
+      'https://life-sync-server-eight.vercel.app/donors',
       {
         params: {
           bloodGroup,
