@@ -15,7 +15,7 @@ function AllBloodDonationReq() {
   useEffect(() => {
     const fetchUserData = async () => {
       const { data } = await axios.get(
-        `https://lifesyncserver2.vercel.app/users/${user?.email}`
+        `http://localhost:5000/users/${user?.email}`
       );
       setUserData(data[0]);
     };
@@ -25,7 +25,7 @@ function AllBloodDonationReq() {
   useEffect(() => {
     const fetchDonationRequests = async () => {
       const { data } = await axios.get(
-        'https://lifesyncserver2.vercel.app/donation-requests'
+        'http://localhost:5000/donation-requests'
       );
       setMyDonationReq(data);
     };
@@ -34,7 +34,7 @@ function AllBloodDonationReq() {
 
   const handleDelete = async _id => {
     await axios.delete(
-      `https://lifesyncserver2.vercel.app/donation-requests/${_id}`
+      `http://localhost:5000/donation-requests/${_id}`
     );
     setControl(!control);
   };

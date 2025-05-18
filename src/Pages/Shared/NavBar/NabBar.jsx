@@ -53,7 +53,7 @@ function NavBar() {
           <ul className="flex flex-col items-center mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
             {[
               { to: '/dashboard/create-donation-request', label: 'Blood Needed' },
-              { to: '/search', label: 'Search Donations' },
+              { to: '/search', label: 'Search Donors' },
               { to: '/donation-request', label: 'Donation Requests' },
               { to: '/blog', label: 'Blog' },
               // { to: '/funding', label: 'Funding' },

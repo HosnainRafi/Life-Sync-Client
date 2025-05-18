@@ -12,10 +12,10 @@ const AdminAnalysis = () => {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `https://lifesyncserver2.vercel.app/users`
+        `http://localhost:5000/users`
       );
       console.log(data[0]?.role);
-      const filterUser = data.filter(item => item.role === 'donor');
+      const filterUser = data.filter(item => item.role === 'Donor');
       setUserData(filterUser);
     })();
   }, [user?.email]);
@@ -23,7 +23,7 @@ const AdminAnalysis = () => {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        'https://lifesyncserver2.vercel.app/donation-requests'
+        'http://localhost:5000/donation-requests'
       );
       setMyDonationReq(data);
     })();

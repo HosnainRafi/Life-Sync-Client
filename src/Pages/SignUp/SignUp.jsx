@@ -7,7 +7,7 @@ import axios from 'axios';
 // import logo from '../../assets/images/logo.png';
 
 function SignUp() {
-  const { createUser, setUser, updateUserProfile,user } = useContext(AuthContext);
+  const { createUser, setUser, updateUserProfile, user } = useContext(AuthContext);
   const [district, setDistrict] = useState([]);
   const [upazila, setUpazila] = useState([]);
   const [allUpazilas, setAllUpazilas] = useState([]); // Store all upazilas
@@ -55,6 +55,8 @@ function SignUp() {
     const form = e.target;
     const name = form.name.value;
     const email = form.email.value;
+    const phone = form.phone.value;
+    const role = form.role.value;
     const photo = form.photo.files[0];
     const password = form.password.value;
     const confirmPassword = form.confirmPassword.value;
@@ -71,8 +73,7 @@ function SignUp() {
     formData.append('image', photo);
     try {
       const { data } = await axios.post(
-        `https://api.imgbb.com/1/upload?key=${
-          import.meta.env.VITE_IMAGE_HOSTING_KEY
+        `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMAGE_HOSTING_KEY
         }`,
         formData
       );
@@ -89,18 +90,19 @@ function SignUp() {
     const user = {
       name,
       email,
+      phone,
+      role,
       photoURL,
       password,
       confirmPassword,
       bloodGroup,
       district,
       upazila,
-      role: 'donor',
       status: 'active',
     };
     console.log(user);
     const { data } = await axios.post(
-      `https://lifesyncserver2.vercel.app/users`,
+      `http://localhost:5000/users`,
       user
     );
     console.log(data);
@@ -220,12 +222,45 @@ function SignUp() {
                   placeholder="Email address"
                 />
               </div>
+
+
+
+              <div className="relative flex items-center mt-6">
+                <span className="absolute">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-6 h-6 mx-3 text-gray-300 dark:text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 5a2 2 0 012-2h1.586a1 1 0 01.707.293l2.414 2.414a1 1 0 010 1.414L8.414 9.586a16.019 16.019 0 006 6l2.465-2.465a1 1 0 011.414 0l2.414 2.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    />
+                  </svg>
+                </span>
+
+                <input
+                  type="tel"
+                  name="phone"
+                  required
+                  className="block w-full py-3 text-gray-950 bg-white border rounded-lg px-11 dark:text-gray-950 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  placeholder="Phone number"
+                />
+              </div>
+
+
+
+
               <div className="relative flex items-center">
-                <div className="relative mt-4">
+                <div className="relative mt-4 w-full">
                   <select
                     name="bloodGroup"
                     required
-                    className="block w-full px-36 py-3   text-gray-950  bg-white border border-gray-300 rounded-lg      dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className="block w-full py-3 pl-4 pr-10 text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                   >
                     <option value="" defaultValue="">
                       Select Blood Group
@@ -247,22 +282,19 @@ function SignUp() {
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M9 5l7 7-7 7"
-                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
                 </div>
               </div>
+
               <div className="relative flex items-center">
-                <div className="relative mt-4">
+                <div className="relative mt-4 w-full">
                   <select
                     name="district"
                     required
                     onBlur={handleSelectDistrict}
-                    className="block w-full px-36 py-3   text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className="block w-full py-3 pl-4 pr-10 text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                   >
                     <option value="" defaultValue="">
                       Select District Name
@@ -273,14 +305,26 @@ function SignUp() {
                       </option>
                     ))}
                   </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-6 h-6 text-gray-300 dark:text-gray-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
+
               <div className="relative flex items-center">
-                <div className="relative mt-4">
+                <div className="relative mt-4 w-full">
                   <select
                     name="upazila"
                     required
-                    className="block w-full px-36 py-3   text-gray-950  bg-white border border-gray-300 rounded-lg      dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className="block w-full py-3 pl-4 pr-10 text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                   >
                     <option value="" defaultValue="">
                       Select Upazila Name
@@ -299,15 +343,40 @@ function SignUp() {
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M9 5l7 7-7 7"
-                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
                 </div>
               </div>
+
+              <div className="relative flex items-center">
+                <div className="relative mt-4 w-full">
+                  <select
+                    name="role"
+                    required
+                    className="block w-full py-3 pl-4 pr-10 text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  >
+                    <option value="" defaultValue="Donor">
+                      Select Role
+                    </option>
+                    <option value="Donor">Donor</option>
+                    <option value="Recipient">Recipient</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-6 h-6 text-gray-300 dark:text-gray-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+
 
               <div className="relative flex items-center mt-4">
                 <span className="absolute">
@@ -330,8 +399,10 @@ function SignUp() {
                 <input
                   type="password"
                   name="password"
-                  className="block w-full px-10 py-3   text-gray-950  bg-white border rounded-lg      dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                  placeholder="Password"
+                  minLength={6}
+                  required
+                  className="block w-full px-10 py-3 text-gray-950 bg-white border rounded-lg dark:text-gray-950 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  placeholder="Password (min 6 characters)"
                 />
               </div>
 
@@ -356,10 +427,13 @@ function SignUp() {
                 <input
                   type="password"
                   name="confirmPassword"
-                  className="block w-full px-10 py-3   text-gray-950  bg-white border rounded-lg      dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  minLength={6}
+                  required
+                  className="block w-full px-10 py-3 text-gray-950 bg-white border rounded-lg dark:text-gray-950 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                   placeholder="Confirm Password"
                 />
               </div>
+
               <small className="text-red-500">{error}</small>
 
               <div className="mt-6">
@@ -371,13 +445,13 @@ function SignUp() {
                 </button>
 
                 <div className="mt-6 text-center ">
-                {user ? (
-        <p className="text-sm text-red-500">You are already logged in.</p>
-      ) : (
-        <Link to="/signin" className="text-sm text-gray-800 dark:text-blue-400">
-          Already have an account? <span className="hover:underline">Log In</span>
-        </Link>
-      )}
+                  {user ? (
+                    <p className="text-sm text-red-500">You are already logged in.</p>
+                  ) : (
+                    <Link to="/signin" className="text-sm text-gray-800 dark:text-blue-400">
+                      Already have an account? <span className="hover:underline">Log In</span>
+                    </Link>
+                  )}
                 </div>
               </div>
             </form>

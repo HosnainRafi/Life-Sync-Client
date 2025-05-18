@@ -47,7 +47,7 @@ function AuthProvider({ children }) {
   //logOut
   const logOut = async () => {
     const { data } = await axios(
-      `https://lifesyncserver2.vercel.app/logout`,
+      `http://localhost:5000/logout`,
       { withCredentials: true }
     );
     console.log(data);
@@ -63,13 +63,13 @@ function AuthProvider({ children }) {
       setLoading(false);
       if (currentUser) {
         const loggedUser = { email: currentUser.email };
-        axios
-          .post('https://lifesyncserver2.vercel.app/jwt', loggedUser, {
-            withCredentials: true,
-          })
-          .then(res => {
-            console.log('token response', res.data);
-          });
+        // axios
+        //   .post('http://localhost:5000/jwt', loggedUser, {
+        //     withCredentials: true,
+        //   })
+        //   .then(res => {
+        //     console.log('token response', res.data);
+        //   });
       }
     });
 

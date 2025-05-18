@@ -9,7 +9,7 @@ function DonationRequest() {
     (async () => {
       const status = "pending";
       const { data } = await axios.get(
-        `https://lifesyncserver2.vercel.app/donation-requests/home/${status}`
+        `http://localhost:5000/donation-requests/home/${status}`
       );
       setDonationRequest(data);
     })();

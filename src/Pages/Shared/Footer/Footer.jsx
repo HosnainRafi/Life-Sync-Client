@@ -34,11 +34,11 @@ function Footer() {
             <p className="order-2 md:order-1 mt-8 md:mt-0">
               &copy; All rights reserved LifeSync, 2024
             </p>
-            <div className="order-1 md:order-2">
+            {/* <div className="order-1 md:order-2">
               <span className="px-2">About us</span>
               <span className="px-2 border-l">Contact us</span>
               <span className="px-2 border-l">Privacy Policy</span>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

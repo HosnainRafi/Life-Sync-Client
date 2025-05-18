@@ -12,7 +12,7 @@ function AllUsers() {
   useEffect(() => {
     const fetchUsers = setTimeout(async () => {
       const { data } = await axios.get(
-        `https://lifesyncserver2.vercel.app/users`
+        `http://localhost:5000/users`
       );
       setUserData(data);
     }, 500); // Adjust delay as needed
@@ -23,7 +23,7 @@ function AllUsers() {
   const handleBlock = async (id, status, role) => {
     if (status === 'active' && role !== 'admin') {
       const response = await axios.patch(
-        `https://lifesyncserver2.vercel.app/users/block/${id}`
+        `http://localhost:5000/users/block/${id}`
       );
       if (response.data.modifiedCount) {
         Swal.fire('Successful updated Status');
@@ -39,7 +39,7 @@ function AllUsers() {
   const handleUnBlock = async (id, status, role) => {
     if (status === 'block' && role !== 'admin') {
       const response = await axios.patch(
-        `https://lifesyncserver2.vercel.app/users/active/${id}`
+        `http://localhost:5000/users/active/${id}`
       );
       if (response.data.modifiedCount) {
         Swal.fire('Successful updated Status');
@@ -55,7 +55,7 @@ function AllUsers() {
   const handleVolunteer = async (id, role) => {
     if (role === 'donor') {
       const response = await axios.patch(
-        `https://lifesyncserver2.vercel.app/users/volunteer/${id}`
+        `http://localhost:5000/users/volunteer/${id}`
       );
       if (response.data.modifiedCount) {
         Swal.fire('Successful updated Status');
@@ -69,7 +69,7 @@ function AllUsers() {
   const handleAdmin = async (id, role) => {
     if (role === 'donor' || role === 'volunteer') {
       const response = await axios.patch(
-        `https://lifesyncserver2.vercel.app/users/makeAdmin/${id}`
+        `http://localhost:5000/users/makeAdmin/${id}`
       );
       if (response.data.modifiedCount) {
         Swal.fire('Successful updated Status');

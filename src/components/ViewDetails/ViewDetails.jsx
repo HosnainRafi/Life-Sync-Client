@@ -15,12 +15,13 @@ function ViewDetails() {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `https://lifesyncserver2.vercel.app/donation-requests/single/${_id}`
+        `http://localhost:5000/donation-requests/single/${_id}`
       );
       setDonationRequestSingleData(data);
     })();
   }, [_id, control]);
-  console.log(donationRequestSingleData)
+  console.log(donationRequestSingleData);
+  console.log(user);
 
 
   const handleDonate = () => {
@@ -36,7 +37,7 @@ function ViewDetails() {
       if (result.isConfirmed) {
         try {
           const response = await axios.patch(
-            `https://lifesyncserver2.vercel.app/donation-requests/single-update/${_id}`,
+            `http://localhost:5000/donation-requests/single-update/${_id}`,
             { donorsEmail: user.email } // Send user email in request body
           );
   

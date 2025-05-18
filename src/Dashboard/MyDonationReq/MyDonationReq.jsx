@@ -16,7 +16,7 @@ function MyDonationReq() {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `https://lifesyncserver2.vercel.app/donation-requests/${user?.email}`
+        `http://localhost:5000/donation-requests/${user?.email}`
       );
       setMyDonationReq(data);
     })();
@@ -34,7 +34,7 @@ function MyDonationReq() {
     }).then(async result => {
       if (result.isConfirmed) {
         const response = await axios.delete(
-          `https://lifesyncserver2.vercel.app/donation-requests/${id}`
+          `http://localhost:5000/donation-requests/${id}`
         );
         if (response.data.deletedCount) {
           Swal.fire(

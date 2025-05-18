@@ -66,12 +66,13 @@ const [selectedDistrictName, setSelectedDistrictName] = useState("");
   const handleSearch = async (e) => {
     e.preventDefault();
     const { data } = await axios.get(
-      'https://lifesyncserver2.vercel.app/donors',
+      'http://localhost:5000/donors',
       {
         params: {
           bloodGroup,
           district: selectedDistrict, // Now passing the district name
           upazila: selectedUpazila,
+          role: 'Donor',
         },
       }
     );
@@ -81,7 +82,7 @@ const [selectedDistrictName, setSelectedDistrictName] = useState("");
 
   return (
     <div className="container mx-auto my-10">
-      <h2 className="text-3xl font-semibold mb-6">Search Donation Listings</h2>
+      <h2 className="text-3xl font-semibold mb-6">Search Donor Listings</h2>
       <form onSubmit={handleSearch} className="space-y-4">
         <div>
           <label
@@ -175,23 +176,25 @@ const [selectedDistrictName, setSelectedDistrictName] = useState("");
     <thead className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
       <tr>
         <th className="px-4 py-3 text-left">Name</th>
+        <th className="px-4 py-3 text-left">Email</th>
         <th className="px-4 py-3 text-left">Blood Group</th>
         <th className="px-4 py-3 text-left">District</th>
         <th className="px-4 py-3 text-left">Upazila</th>
         <th className="px-4 py-3 text-left">Phone</th>
         <th className="px-4 py-3 text-left">Status</th>
-        <th className="px-4 py-3 text-left">Address</th>
-        <th className="px-4 py-3 text-center">Details</th>
+        {/* <th className="px-4 py-3 text-left">Address</th> */}
+        {/* <th className="px-4 py-3 text-center">Details</th> */}
       </tr>
     </thead>
     <tbody className="text-gray-700 text-sm">
       {donors.map((donor) => (
         <tr key={donor.id} className="border-b hover:bg-gray-50">
-          <td className="px-4 py-3 whitespace-nowrap">{donor.recipientName}</td>
+          <td className="px-4 py-3 whitespace-nowrap">{donor.name}</td>
+          <td className="px-4 py-3 whitespace-nowrap">{donor.email}</td>
           <td className="px-4 py-3 whitespace-nowrap">{donor.bloodGroup}</td>
-          <td className="px-4 py-3 whitespace-nowrap">{donor.recipientDistrict}</td>
-          <td className="px-4 py-3 whitespace-nowrap">{donor.recipientUpazila}</td>
-          <td className="px-4 py-3 whitespace-nowrap">{donor.phoneNumber}</td>
+          <td className="px-4 py-3 whitespace-nowrap">{donor.district}</td>
+          <td className="px-4 py-3 whitespace-nowrap">{donor.upazila}</td>
+          <td className="px-4 py-3 whitespace-nowrap">{donor.phone}</td>
           <td className="px-4 py-3 whitespace-nowrap">
             {donor.status === "inprogress"
               ? "Request Accepted"
@@ -201,14 +204,14 @@ const [selectedDistrictName, setSelectedDistrictName] = useState("");
               ? "Donation Complete"
               : donor.status}
           </td>
-          <td className="px-4 py-3 whitespace-nowrap">{donor.address}</td>
-          <td className="px-4 py-3 text-center">
+          {/* <td className="px-4 py-3 whitespace-nowrap">{donor.address}</td> */}
+          {/* <td className="px-4 py-3 text-center">
             <Link to={`/view-details/${donor._id}`}>
               <button className="px-3 py-2 text-white bg-green-600 hover:bg-green-700 rounded-lg text-xs font-semibold">
                 View Details
               </button>
             </Link>
-          </td>
+          </td> */}
         </tr>
       ))}
     </tbody>
