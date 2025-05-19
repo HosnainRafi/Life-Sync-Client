@@ -26,7 +26,7 @@ function Board() {
 
       try {
         const { data } = await axios.get(
-          `https://life-sync-server-eight.vercel.app/donation-requests/${user?.email}`
+          `https://life-sync-server-eight.vercel.app/donation-requests/donor/${user?.email}`
         );
         setRealData(data);
         setMyDonationReq(data.slice(0, 3)); // Take only the first 3 records
