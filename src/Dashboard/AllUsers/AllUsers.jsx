@@ -53,7 +53,7 @@ function AllUsers() {
   };
 
   const handleVolunteer = async (id, role) => {
-    if (role === 'donor') {
+    if (role === 'Donor') {
       const response = await axios.patch(
         `https://life-sync-server-eight.vercel.app/users/volunteer/${id}`
       );
@@ -67,7 +67,7 @@ function AllUsers() {
   };
 
   const handleAdmin = async (id, role) => {
-    if (role === 'donor' || role === 'volunteer') {
+    if (role === 'Donor' || role === 'volunteer') {
       const response = await axios.patch(
         `https://life-sync-server-eight.vercel.app/users/makeAdmin/${id}`
       );

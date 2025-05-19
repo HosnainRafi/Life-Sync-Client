@@ -26,7 +26,7 @@ function Board() {
 
       try {
         const { data } = await axios.get(
-          `https://life-sync-server-eight.vercel.app/donation-requests/donor/${user?.email}`
+          `https://life-sync-server-eight.vercel.app/donation-requests/${user?.email}`
         );
         setRealData(data);
         setMyDonationReq(data.slice(0, 3)); // Take only the first 3 records
@@ -84,7 +84,7 @@ function Board() {
       <h2 className="text-3xl font-bold m-6 md:m-10 text-center">
         Hello {userData?.name}. Welcome to LifeSync
       </h2>
-      {userData?.role === 'donor' && (
+      {userData?.role === 'Donor' && (
         <>
           {myDonationReq.length > 0 ? (
             <div className="overflow-x-auto">

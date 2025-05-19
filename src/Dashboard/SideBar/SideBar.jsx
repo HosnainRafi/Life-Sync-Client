@@ -83,7 +83,7 @@ const SideBar = () => {
               Profile
             </ListItem>
           </Link>
-          {userData?.role === 'donor' && (
+          {userData?.role === 'Donor' && (
             <>
               <Link to="my-donation-request">
                 <ListItem>
