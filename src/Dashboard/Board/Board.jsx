@@ -12,6 +12,7 @@ function Board() {
   const [control, setControl] = useState(false);
   const [myDonationReq, setMyDonationReq] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
@@ -20,22 +21,21 @@ function Board() {
       setUserData(data[0]);
     })();
   }, [user?.email]);
+
   useEffect(() => {
     (async () => {
-      if (!user?.email) return; // Ensure email exists before making the request
-
+      if (!user?.email) return;
       try {
         const { data } = await axios.get(
           `https://life-sync-server-eight.vercel.app/donation-requests/donor/${user?.email}`
         );
         setRealData(data);
-        setMyDonationReq(data.slice(0, 3)); // Take only the first 3 records
+        setMyDonationReq(data.slice(0, 3));
       } catch (error) {
         console.error("Error fetching donation requests:", error);
       }
     })();
   }, [control, user?.email]);
-
 
   const handleDone = async id => {
     const response = await axios.patch(
@@ -46,6 +46,7 @@ function Board() {
       setControl(!control);
     }
   };
+
   const handleCancel = async id => {
     const response = await axios.patch(
       `https://life-sync-server-eight.vercel.app/donation-requests/cancel/${id}`
@@ -55,6 +56,7 @@ function Board() {
       setControl(!control);
     }
   };
+
   const handleDelete = id => {
     Swal.fire({
       title: 'Sure want to Delete?',
@@ -76,14 +78,17 @@ function Board() {
       }
     });
   };
+
   const handleViewAllRequest = () => {
     navigate('/dashboard/my-donation-request');
   };
+
   return (
     <div>
       <h2 className="text-3xl font-bold m-6 md:m-10 text-center">
         Hello {userData?.name}. Welcome to LifeSync
       </h2>
+
       {userData?.role === 'Donor' && (
         <>
           {myDonationReq.length > 0 ? (
@@ -110,16 +115,14 @@ function Board() {
                       <th>{index + 1}</th>
                       <td>{donation?.recipientName}</td>
                       <td>
-                        {donation?.recipientUpazila} ,{' '}
-                        {donation?.recipientDistrict}
+                        {donation?.recipientUpazila}, {donation?.recipientDistrict}
                       </td>
                       <td>{donation?.donationDate}</td>
                       <td>{donation.donationTime}</td>
                       <td>{donation?.status}</td>
                       <td>
-                        {' '}
-                        {donation?.status == 'inprogress' ? (
-                          <div className='flex item-center gap-2'>
+                        {donation?.status === 'inprogress' && (
+                          <div className="flex item-center gap-2">
                             <button
                               onClick={() => handleDone(donation?._id)}
                               className="btn btn-primary btn-sm mr-2"
@@ -133,7 +136,7 @@ function Board() {
                               Cancel
                             </button>
                           </div>
-                        ) : null}{' '}
+                        )}
                       </td>
                       <td>
                         <Link to={`/dashboard/edit/${donation?._id}`}>
@@ -152,36 +155,50 @@ function Board() {
                       </td>
                       <th>
                         <Link to={`/dashboard/view-details/${donation?._id}`}>
-                          <button className="btn btn-outline btn-sm">
-                            Details
-                          </button>
+                          <button className="btn btn-outline btn-sm">Details</button>
                         </Link>
                       </th>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              {realData.length > 0 ? (
+
+              {realData.length > 0 && (
                 <div className="text-center my-8 lg:my-12">
                   <button
                     onClick={handleViewAllRequest}
                     className="btn btn-primary"
                   >
-                    View My All Request
+                    View My All Requests
                   </button>
                 </div>
-              ) : null}
+              )}
             </div>
           ) : (
-            <div className="text-red-500 text-center mt-4">
-              No donation requests found.
+            <div className="flex flex-col items-center justify-center mt-10 text-center">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
+                alt="No Data"
+                className="w-32 h-32 mb-4 opacity-70"
+              />
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                No Donation Requests Yet
+              </h3>
+              <p className="text-gray-500 mb-4 max-w-md">
+                You haven’t accepted any donation requests yet. Once someone selects you as a donor,
+                their requests will appear here.
+              </p>
+              <Link to="/donation-request">
+                <button className="btn btn-primary">Explore Available Requests</button>
+              </Link>
             </div>
           )}
         </>
       )}
 
-      {userData?.role === 'admin' && <AdminAnalysis />}
-      {userData?.role === 'volunteer' && <AdminAnalysis />}
+      {(userData?.role === 'admin' || userData?.role === 'volunteer') && (
+        <AdminAnalysis />
+      )}
     </div>
   );
 }
