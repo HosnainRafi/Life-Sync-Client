@@ -196,6 +196,17 @@ function Board() {
         </>
       )}
 
+      {userData?.role === 'Recipient' && (
+        <div className="text-center mt-10">
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            You can create a new blood donation request.
+          </h3>
+          <Link to="/dashboard/create-donation-request">
+            <button className="btn btn-primary mt-4">Request for Blood</button>
+          </Link>
+        </div>
+      )}
+
       {(userData?.role === 'admin' || userData?.role === 'volunteer') && (
         <AdminAnalysis />
       )}

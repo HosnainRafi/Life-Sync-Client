@@ -93,6 +93,11 @@ const SideBar = () => {
                   My Donation Requests
                 </ListItem>
               </Link>
+              
+            </>
+          )}
+          {userData?.role === 'Recipient' && (
+            <>
               <Link to="create-donation-request">
                 <ListItem>
                   <ListItemPrefix>
@@ -101,8 +106,18 @@ const SideBar = () => {
                   Create Donation Request
                 </ListItem>
               </Link>
+              <Link to="my-donation-request">
+                <ListItem>
+                  <ListItemPrefix>
+                    <UserCircleIcon className="h-5 w-5" />
+                  </ListItemPrefix>
+                  My Donation Requests
+                </ListItem>
+              </Link>
+              
             </>
           )}
+       
           {userData?.role === 'admin' && (
             <>
               <Link to="all-users">
