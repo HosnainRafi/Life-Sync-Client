@@ -54,7 +54,7 @@ function NavBar() {
             {[
               { to: '/dashboard/create-donation-request', label: 'Blood Needed' },
               { to: '/search', label: 'Search Donors' },
-              { to: '/donation-request', label: 'Donation Requests' },
+              { to: '/donation-request', label: 'Donation Lists' },
               { to: '/blog', label: 'Blog' },
               // { to: '/funding', label: 'Funding' },
             ].map(link => (
