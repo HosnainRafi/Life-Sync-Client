@@ -59,7 +59,7 @@ function Board() {
         };
   
         // Send the email
-        await axios.post('http://localhost:5000/send-donation-confirmation', emailPayload);
+        await axios.post('http://localhost:5000/send-donation-confirmation-accept', emailPayload);
   
         Swal.fire('You have accepted the donation request and the recipient has been notified!');
         setControl(!control);
