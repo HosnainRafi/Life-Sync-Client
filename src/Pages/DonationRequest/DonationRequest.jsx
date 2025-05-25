@@ -17,7 +17,7 @@ function DonationRequest() {
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get("http://localhost:5000/donation-requests-new");
+      const res = await axios.get("https://life-sync-server-eight.vercel.app/donation-requests-new");
       setDonationRequest(res.data);
       setFilteredRequests(res.data);
     })();

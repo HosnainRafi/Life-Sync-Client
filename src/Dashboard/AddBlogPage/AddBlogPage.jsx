@@ -41,7 +41,7 @@ function AddBlogPage() {
     };
     console.log(blogPost);
     const { data } = await axios.post(
-      `http://localhost:5000/blog-post`,
+      `https://life-sync-server-eight.vercel.app/blog-post`,
       blogPost
     );
     console.log(data);

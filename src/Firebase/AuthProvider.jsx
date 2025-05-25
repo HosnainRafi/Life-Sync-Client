@@ -70,7 +70,7 @@ const loginUser = async (email, password) => {
   //logOut
   const logOut = async () => {
     const { data } = await axios(
-      `http://localhost:5000/logout`,
+      `https://life-sync-server-eight.vercel.app/logout`,
       { withCredentials: true }
     );
     console.log(data);
@@ -87,7 +87,7 @@ const loginUser = async (email, password) => {
       if (currentUser) {
         const loggedUser = { email: currentUser.email };
         // axios
-        //   .post('http://localhost:5000/jwt', loggedUser, {
+        //   .post('https://life-sync-server-eight.vercel.app/jwt', loggedUser, {
         //     withCredentials: true,
         //   })
         //   .then(res => {

@@ -20,7 +20,7 @@ function SearchPage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:5000/users/${user?.email}`);
+        const { data } = await axios.get(`https://life-sync-server-eight.vercel.app/users/${user?.email}`);
         if (data && data.length > 0) {
           setUserData(data[0]);
         }
@@ -69,7 +69,7 @@ function SearchPage() {
   // Handle search
   const handleSearch = async (e) => {
     e.preventDefault();
-    const { data } = await axios.get('http://localhost:5000/donors', {
+    const { data } = await axios.get('https://life-sync-server-eight.vercel.app/donors', {
       params: {
         bloodGroup,
         district: selectedDistrict,
@@ -84,7 +84,7 @@ function SearchPage() {
   const handleRequestEmail = async (donor) => {
     try {
       // 1. Send email
-      const emailResponse = await axios.post('http://localhost:5000/send-request-email', {
+      const emailResponse = await axios.post('https://life-sync-server-eight.vercel.app/send-request-email', {
         donorEmail: donor.email,
         recipientName: userData.name,
         recipientEmail: userData.email,
@@ -109,7 +109,7 @@ function SearchPage() {
         createdAt: new Date().toISOString(),
       };
   
-      const dbResponse = await axios.post('http://localhost:5000/donation-requests-donor', requestPayload);
+      const dbResponse = await axios.post('https://life-sync-server-eight.vercel.app/donation-requests-donor', requestPayload);
   
       if (emailResponse.status === 200 && dbResponse.status === 200) {
         alert('Request sent and saved successfully!');

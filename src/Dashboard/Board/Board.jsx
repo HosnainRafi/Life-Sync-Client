@@ -16,7 +16,7 @@ function Board() {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/users/${user?.email}`
+        `https://life-sync-server-eight.vercel.app/users/${user?.email}`
       );
       setUserData(data[0]);
     })();
@@ -27,7 +27,7 @@ function Board() {
       if (!user?.email) return;
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/donation-requests/donor/${user?.email}`
+          `https://life-sync-server-eight.vercel.app/donation-requests/donor/${user?.email}`
         );
         setRealData(data);
         setMyDonationReq(data);
@@ -40,13 +40,13 @@ function Board() {
   const handleAccept = async (id) => {
     try {
       const response = await axios.patch(
-        `http://localhost:5000/donation-requests/accept/${id}`
+        `https://life-sync-server-eight.vercel.app/donation-requests/accept/${id}`
       );
   
       if (response.data.modifiedCount) {
         // Fetch the updated request to get recipient details
         const { data: requestData } = await axios.get(
-          `http://localhost:5000/donation-requests/single/${id}`
+          `https://life-sync-server-eight.vercel.app/donation-requests/single/${id}`
         );
         const request = requestData[0]; // Assuming it's in an array
   
@@ -59,7 +59,7 @@ function Board() {
         };
   
         // Send the email
-        await axios.post('http://localhost:5000/send-donation-confirmation-accept', emailPayload);
+        await axios.post('https://life-sync-server-eight.vercel.app/send-donation-confirmation-accept', emailPayload);
   
         Swal.fire('You have accepted the donation request and the recipient has been notified!');
         setControl(!control);
@@ -73,7 +73,7 @@ function Board() {
 
   const handleDone = async id => {
     const response = await axios.patch(
-      `http://localhost:5000/donation-requests/done/${id}`
+      `https://life-sync-server-eight.vercel.app/donation-requests/done/${id}`
     );
     if (response.data.modifiedCount) {
       Swal.fire('Successfully updated status to Done');
@@ -83,7 +83,7 @@ function Board() {
 
   const handleCancel = async id => {
     const response = await axios.patch(
-      `http://localhost:5000/donation-requests/cancel/${id}`
+      `https://life-sync-server-eight.vercel.app/donation-requests/cancel/${id}`
     );
     if (response.data.modifiedCount) {
       Swal.fire('Successfully Cancelled Request');
@@ -103,7 +103,7 @@ function Board() {
     }).then(async result => {
       if (result.isConfirmed) {
         const response = await axios.delete(
-          `http://localhost:5000/donation-requests/${id}`
+          `https://life-sync-server-eight.vercel.app/donation-requests/${id}`
         );
         if (response.data.deletedCount) {
           Swal.fire('Successfully Deleted Request');

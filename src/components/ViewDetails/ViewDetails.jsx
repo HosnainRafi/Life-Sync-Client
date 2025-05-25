@@ -16,7 +16,7 @@ function ViewDetails() {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/donation-requests/single/${_id}`
+        `https://life-sync-server-eight.vercel.app/donation-requests/single/${_id}`
       );
       setDonationRequestSingleData(data);
     })();
@@ -28,7 +28,7 @@ function ViewDetails() {
     const fetchUserData = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/users/${user?.email}`
+          `https://life-sync-server-eight.vercel.app/users/${user?.email}`
         );
         if (data && data.length > 0) {
           setUserData(data[0]);
@@ -60,13 +60,13 @@ function ViewDetails() {
         try {
           // 1. Update donation request
           const response = await axios.patch(
-            `http://localhost:5000/donation-requests/single-update/${_id}`,
+            `https://life-sync-server-eight.vercel.app/donation-requests/single-update/${_id}`,
             { donorsEmail: user.email }
           );
   
           if (response.data.modifiedCount) {
             // 2. Send confirmation email
-            await axios.post(`http://localhost:5000/send-donation-confirmation`, {
+            await axios.post(`https://life-sync-server-eight.vercel.app/send-donation-confirmation`, {
               donorName: user.displayName || 'A donor',
               donorEmail: user.email,
               donorPhone: userData?.phoneNumber || 'Not provided',

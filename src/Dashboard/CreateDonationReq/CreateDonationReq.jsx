@@ -86,7 +86,7 @@ useEffect(() => {
 
     try {
       const res = await axios.post(
-        'http://localhost:5000/donation-requests',
+        'https://life-sync-server-eight.vercel.app/donation-requests',
         donationRequest
       );
       if (res.data.insertedId) {
@@ -101,7 +101,7 @@ useEffect(() => {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/users/${user?.email}`
+        `https://life-sync-server-eight.vercel.app/users/${user?.email}`
       );
       setUserData(data[0]);
     })();
