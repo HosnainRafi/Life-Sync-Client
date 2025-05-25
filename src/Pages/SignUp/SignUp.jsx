@@ -102,7 +102,7 @@ function SignUp() {
     };
     console.log(user);
     const { data } = await axios.post(
-      `https://life-sync-server-eight.vercel.app/users`,
+      `http://localhost:5000/users`,
       user
     );
     console.log(data);
@@ -111,11 +111,11 @@ function SignUp() {
         .then(result => {
           updateUserProfile(name, photoURL)
             .then(() => {
-              setUser(result.user);
-              toast.success('Successfully Created Account!');
-              navigate('/');
+              setUser(null); // Do not set the user until verified
+              toast.success('Account created! Please verify your email before logging in.');
+              navigate('/verify-email'); // Redirect to a page telling them to verify
             })
-            .catch(err => toast.error(`${error.message}`));
+            .catch(err => toast.error(`${err.message}`));
         })
         .catch(error => toast.error(`${error.message}`));
     }

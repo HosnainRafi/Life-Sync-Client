@@ -17,7 +17,7 @@ function DonationRequest() {
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get("https://life-sync-server-eight.vercel.app/donation-requests-new");
+      const res = await axios.get("http://localhost:5000/donation-requests-new");
       setDonationRequest(res.data);
       setFilteredRequests(res.data);
     })();
@@ -51,20 +51,26 @@ function DonationRequest() {
     setSelectedUpazila("");
   };
 
+  
+
   const handleSearch = (e) => {
     e.preventDefault();
+    console.log("Search triggered");
+  
     const filtered = donationRequest.filter(item =>
       (!bloodGroup || item.bloodGroup === bloodGroup) &&
       (!selectedDistrictName || item.recipientDistrict === selectedDistrictName) &&
       (!selectedUpazila || item.recipientUpazila === selectedUpazila) &&
-      (!status || item.status === status)
+      (!status || item.status.toLowerCase() === status.toLowerCase())
     );
+  
     setFilteredRequests(filtered);
   };
+  
 
   return (
     <div className="container mx-auto my-10">
-      <h2 className="text-3xl font-semibold mb-6">Search Donation Requests</h2>
+      <h2 className="text-3xl font-semibold mb-6">Search Recipient Requests</h2>
 
       <form onSubmit={handleSearch} className="space-y-4">
         <div>
@@ -129,10 +135,7 @@ function DonationRequest() {
           </select>
         </div>
 
-        <button
-          type="submit"
-          className="mt-4 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-        >
+        <button type="submit" className="mt-4 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
           Search
         </button>
       </form>
@@ -140,7 +143,7 @@ function DonationRequest() {
       <div className="mt-10">
         {filteredRequests.length > 0 ? (
           <div className="overflow-x-auto">
-            <h3 className="text-xl font-semibold mb-4">Donation Requests</h3>
+            <h3 className="text-xl font-semibold mb-4">Recipient Request Lists</h3>
             <table className="w-full min-w-max border-collapse bg-white shadow-md rounded-lg overflow-hidden">
               <thead className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
                 <tr>
@@ -149,8 +152,12 @@ function DonationRequest() {
                   <th className="px-4 py-3 text-left">District</th>
                   <th className="px-4 py-3 text-left">Upazila</th>
                   <th className="px-4 py-3 text-left">Phone</th>
-                  <th className="px-4 py-3 text-left">Status</th>
                   <th className="px-4 py-3 text-left">Address</th>
+                  <th className="px-4 py-3 text-left">Status</th>
+                  <th className="px-4 py-3 text-left">Donor name</th>
+                  <th className="px-4 py-3 text-left">Donor email</th>
+                  <th className="px-4 py-3 text-left">Donor Phone</th>
+                  <th className="px-4 py-3 text-left">Donor address</th>
                   <th className="px-4 py-3 text-left">Details</th>
                 </tr>
               </thead>
@@ -162,6 +169,7 @@ function DonationRequest() {
                     <td className="px-4 py-3">{donor.recipientDistrict}</td>
                     <td className="px-4 py-3">{donor.recipientUpazila}</td>
                     <td className="px-4 py-3">{donor.phoneNumber}</td>
+                    <td className="px-4 py-3">{donor.address}</td>
                     <td className="px-4 py-3">
                       {donor.status === "inprogress"
                         ? "Request Accepted"
@@ -171,7 +179,11 @@ function DonationRequest() {
                         ? "Donation Complete"
                         : donor.status}
                     </td>
+                    <td className="px-4 py-3">{donor.donorName}</td>
+                    <td className="px-4 py-3">{donor.donorsEmail}</td>
+                    <td className="px-4 py-3">{donor.donorPhone}</td>
                     <td className="px-4 py-3">{donor.address}</td>
+                    
                     <td className="px-4 py-3">
                       <Link to={`/view-details/${donor._id}`}>
                         <button className="px-3 py-2 text-white bg-green-600 hover:bg-green-700 rounded-lg text-xs font-semibold">

@@ -12,27 +12,31 @@ function CreateDonationReq() {
   const [selectedUpazilas, setSelectedUpazilas] = useState([]);
   const [userData, setUserData] = useState([]);
 
-
   const style = {
-
-    fontSize: 14
+    fontSize: 14,
   };
 
   useEffect(() => {
-    (async () => {
-      const res = await fetch("/districts.json");
-      const data = await res.json();
-      setDistricts(data[2].data);
-    })();
-  }, []);
+  (async () => {
+    const res = await fetch('/districts.json');
+    const data = await res.json();
+    const sortedDistricts = data[2].data.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+    setDistricts(sortedDistricts);
+  })();
+}, []);
 
-  useEffect(() => {
-    (async () => {
-      const res = await fetch("/upazilas.json");
-      const data = await res.json();
-      setUpazilas(data[2].data);
-    })();
-  }, []);
+useEffect(() => {
+  (async () => {
+    const res = await fetch('/upazilas.json');
+    const data = await res.json();
+    const sortedUpazilas = data[2].data.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+    setUpazilas(sortedUpazilas);
+  })();
+}, []);
 
   const handleSelectDistrict = (e) => {
     const districtName = e.target.value;
@@ -42,7 +46,7 @@ function CreateDonationReq() {
 
     if (selectedDistrict) {
       const filteredUpazilas = upazilas.filter(
-        (item) => item.district_id === selectedDistrict.id // Ensure matching IDs
+        (item) => item.district_id === selectedDistrict.id
       );
       setSelectedUpazilas(filteredUpazilas);
     } else {
@@ -50,7 +54,7 @@ function CreateDonationReq() {
     }
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
     const recipientName = form.recipientName.value;
@@ -64,6 +68,7 @@ function CreateDonationReq() {
     const donationTime = form.donationTime.value;
     const description = form.textarea.value;
     const email = user?.email;
+
     const donationRequest = {
       recipientName,
       bloodGroup,
@@ -78,14 +83,14 @@ function CreateDonationReq() {
       status: 'pending',
       email,
     };
+
     try {
       const res = await axios.post(
-        'https://life-sync-server-eight.vercel.app/donation-requests',
+        'http://localhost:5000/donation-requests',
         donationRequest
       );
-      console.log(res);
       if (res.data.insertedId) {
-        Swal.fire('Successful Added Donation Information');
+        Swal.fire('Successfully added donation request');
         navigate('/dashboard/my-donation-request');
       }
     } catch (error) {
@@ -96,12 +101,12 @@ function CreateDonationReq() {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `https://life-sync-server-eight.vercel.app/users/${user?.email}`
+        `http://localhost:5000/users/${user?.email}`
       );
       setUserData(data[0]);
     })();
   }, [user?.email]);
-  console.log(userData);
+
   return (
     <>
       {userData?.status === 'block' ? (
@@ -109,7 +114,7 @@ function CreateDonationReq() {
           You are a blocked User
         </p>
       ) : (
-        <div className="max-w-5xl mx-auto  w-full">
+        <div className="max-w-5xl mx-auto w-full">
           <h2 className="text-3xl font-bold mb-4 text-center my-8 md:my-14">
             Donation Request Form
           </h2>
@@ -117,81 +122,69 @@ function CreateDonationReq() {
             onSubmit={handleSubmit}
             className="bg-gray-100 p-6 rounded-lg w-full"
           >
+            {/* Requester Name */}
             <div className="relative w-full mb-3">
-              <label
-                className="block text-blueGray-600 text-xs font-bold mb-2"
-                htmlFor="name"
-              >
-                Requester Name
+              <label className="block text-blueGray-600 text-xs font-bold mb-2">
+                Requester Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 disabled
                 required
-                placeholder="Name"
                 defaultValue={user?.displayName}
-                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                className="border-0 px-3 py-3 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
               />
             </div>
+
+            {/* Requester Email */}
             <div className="relative w-full mb-3">
-              <label
-                className="block text-blueGray-600 text-xs font-bold mb-2"
-                htmlFor="name"
-              >
-                Requester Email
+              <label className="block text-blueGray-600 text-xs font-bold mb-2">
+                Requester Email <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 disabled
                 required
-                placeholder="Name"
                 defaultValue={user?.email}
-                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                className="border-0 px-3 py-3 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
               />
             </div>
+
+            {/* Recipient Name */}
             <div className="relative w-full mb-3">
-              <label
-                className="block text-blueGray-600 text-xs font-bold mb-2"
-                htmlFor="recipientName"
-              >
-                Recipient Name
+              <label className="block text-blueGray-600 text-xs font-bold mb-2">
+                Recipient Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 name="recipientName"
-                id="name"
                 required
                 placeholder="Name"
-                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                className="border-0 px-3 py-3 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
               />
             </div>
+
+            {/* Phone Number */}
             <div className="relative w-full mb-3">
-              <label
-                className="block text-blueGray-600 text-xs font-bold mb-2"
-                htmlFor="recipientName"
-              >
-                Phone number
+              <label className="block text-blueGray-600 text-xs font-bold mb-2">
+                Phone Number <span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
                 name="phoneNumber"
-                id="phoneNumber"
                 required
                 placeholder="Phone Number"
-                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                className="border-0 px-3 py-3 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
               />
             </div>
-            
+
+            {/* Blood Group */}
             <div className="relative w-full mb-3" style={style}>
-              <label
-                className="block text-blueGray-600 text-xs font-bold mb-2"
-                htmlFor="bloodGroup"
-              >
-                Blood Group
+              <label className="block text-blueGray-600 text-xs font-bold mb-2">
+                Blood Group <span className="text-red-500">*</span>
               </label>
               <select
                 name="bloodGroup"
-                id="bloodGroup"
                 required
                 className="block w-full pl-4 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg"
               >
@@ -206,19 +199,16 @@ function CreateDonationReq() {
                 <option value="O-">O-</option>
               </select>
             </div>
-          
 
+            {/* District */}
             <div className="relative mt-4" style={style}>
-              <label
-                className="block text-blueGray-600 text-xs font-bold mb-2"
-                htmlFor="recipientDistrict"
-              >
-                District
+              <label className="block text-blueGray-600 text-xs font-bold mb-2">
+                District <span className="text-red-500">*</span>
               </label>
               <select
                 name="recipientDistrict"
                 required
-                onChange={handleSelectDistrict} // Use onChange instead of onBlur
+                onChange={handleSelectDistrict}
                 className="block w-full pl-4 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg"
               >
                 <option value="">Select District Name</option>
@@ -230,13 +220,10 @@ function CreateDonationReq() {
               </select>
             </div>
 
-
+            {/* Upazila */}
             <div className="relative mt-4" style={style}>
-              <label
-                className="block text-blueGray-600 text-xs font-bold mb-2"
-                htmlFor="recipientUpazila"
-              >
-                Upazila
+              <label className="block text-blueGray-600 text-xs font-bold mb-2">
+                Upazila <span className="text-red-500">*</span>
               </label>
               <select
                 name="recipientUpazila"
@@ -252,82 +239,73 @@ function CreateDonationReq() {
               </select>
             </div>
 
-
-            <div className="relative w-full mb-3">
-              <label
-                className="block text-blueGray-600 text-xs font-bold mb-2"
-                htmlFor="hospitalName"
-              >
-                Hospital Name
+            {/* Hospital Name */}
+            <div className="relative w-full mb-3 mt-4">
+              <label className="block text-blueGray-600 text-xs font-bold mb-2">
+                Hospital Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 name="hospitalName"
                 required
-                id="hospitalName"
                 placeholder="Hospital Name"
-                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                className="border-0 px-3 py-3 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
               />
             </div>
+
+            {/* Address */}
             <div className="relative w-full mb-3">
-              <label
-                className="block text-blueGray-600 text-xs font-bold mb-2"
-                htmlFor="address"
-              >
-                Full Address
+              <label className="block text-blueGray-600 text-xs font-bold mb-2">
+                Full Address <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 name="address"
-                id="address"
                 required
                 placeholder="Full Address"
-                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                className="border-0 px-3 py-3 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
               />
             </div>
+
+            {/* Donation Date */}
             <div className="relative w-full mb-3">
-              <label
-                className="block text-blueGray-600 text-xs font-bold mb-2"
-                htmlFor="donationDate"
-              >
-                Donation Date
+              <label className="block text-blueGray-600 text-xs font-bold mb-2">
+                Donation Date <span className="text-red-500">*</span>
               </label>
               <input
                 type="date"
-                required
                 name="donationDate"
-                id="donationDate"
-                placeholder="Donation Date"
-                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                required
+                className="border-0 px-3 py-3 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
               />
             </div>
+
+            {/* Donation Time */}
             <div className="relative w-full mb-3">
-              <label
-                className="block text-blueGray-600 text-xs font-bold mb-2"
-                htmlFor="donationTime"
-              >
-                Donation Time
+              <label className="block text-blueGray-600 text-xs font-bold mb-2">
+                Donation Time <span className="text-red-500">*</span>
               </label>
               <input
                 type="time"
-                required
                 name="donationTime"
-                id="donationTime"
-                placeholder="Donation Time"
-                className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                required
+                className="border-0 px-3 py-3 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
               />
             </div>
+
+            {/* Request Message */}
             <div className="mb-4">
               <label className="block text-sm font-bold mb-2">
-                Request Message
+                Request Message <span className="text-red-500">*</span>
               </label>
               <textarea
-                placeholder="Description"
                 name="textarea"
                 required
+                placeholder="Description"
                 className="textarea textarea-bordered textarea-sm w-full max-w-5xl"
               ></textarea>
             </div>
+
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"

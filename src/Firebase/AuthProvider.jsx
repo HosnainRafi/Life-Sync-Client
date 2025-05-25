@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  sendEmailVerification,
   updateProfile,
 } from 'firebase/auth';
 import { createContext, useEffect, useState } from 'react';
@@ -19,15 +20,37 @@ function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   //create user
-  const createUser = (email, password) => {
-    setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password);
-  };
+const createUser = async (email, password) => {
+  setLoading(true);
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    await sendEmailVerification(userCredential.user);
+    toast.success('Verification email sent. Please check your inbox.');
+    return userCredential;
+  } catch (error) {
+    throw error;
+  } finally {
+    setLoading(false); // ✅ always stop loading
+  }
+};
 
-  //email password login
-  const loginUser = (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
-  };
+//email password login
+const loginUser = async (email, password) => {
+  setLoading(true);
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    if (!userCredential.user.emailVerified) {
+      toast.error('Please verify your email before logging in.');
+      await signOut(auth);
+      return null;
+    }
+    return userCredential;
+  } catch (error) {
+    throw error;
+  } finally {
+    setLoading(false); // ✅ always stop loading
+  }
+};
   const resetPassword = email => {
     return sendPasswordResetEmail(auth, email);
   };
@@ -47,7 +70,7 @@ function AuthProvider({ children }) {
   //logOut
   const logOut = async () => {
     const { data } = await axios(
-      `https://life-sync-server-eight.vercel.app/logout`,
+      `http://localhost:5000/logout`,
       { withCredentials: true }
     );
     console.log(data);
@@ -64,7 +87,7 @@ function AuthProvider({ children }) {
       if (currentUser) {
         const loggedUser = { email: currentUser.email };
         // axios
-        //   .post('https://life-sync-server-eight.vercel.app/jwt', loggedUser, {
+        //   .post('http://localhost:5000/jwt', loggedUser, {
         //     withCredentials: true,
         //   })
         //   .then(res => {

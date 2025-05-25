@@ -7,7 +7,7 @@ function Root() {
   return (
     <div>
       <NabBar/>
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto pt-20">
           <Outlet />
       </div>
       <Footer />

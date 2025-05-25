@@ -24,6 +24,7 @@ import DonationViewDetails from '../components/DonationViewDetails/DonationViewD
 import DonationRequestEdit from '../components/DonationRequestEdit/DonationRequestEdit';
 import ElementsWrapper from '../components/ElementsWrapper/ElementsWrapper';
 import LearnMore from '../components/LearnMore/LearnMore';
+import VerifyEmail from '../Pages/VerifyEmail/VerifyEmail';
 
 const router = createBrowserRouter([
   {
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
         path: '/search',
         element: <SearchPage />,
       },
+      {
+        path: 'verify-email',
+        element: <VerifyEmail />,
+      },
     ],
   },
   {
@@ -129,6 +134,7 @@ const router = createBrowserRouter([
         path: 'create-donation-request',
         element: <CreateDonationReq />,
       },
+      
     ],
   },
 ]);

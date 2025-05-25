@@ -11,12 +11,13 @@ function Profile() {
   const [upazila, setUpazilas] = useState([]);
   const [allUpazilas, setAllUpazilas] = useState([]); // Store all upazilas
   const [filteredUpazilas, setFilteredUpazilas] = useState([]); // Filtered upazilas
+  
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const { data } = await axios.get(
-          `https://life-sync-server-eight.vercel.app/users/${user?.email}`
+          `http://localhost:5000/users/${user?.email}`
         );
         if (data && data.length > 0) {
           setUserData(data[0]);
@@ -91,7 +92,7 @@ function Profile() {
     console.log(UpdatedUserData);
     try {
       const response = await axios.patch(
-        `https://life-sync-server-eight.vercel.app/users/${user?.email}`,
+        `http://localhost:5000/users/${user?.email}`,
         UpdatedUserData
       );
       toast.success('User data have been updated');

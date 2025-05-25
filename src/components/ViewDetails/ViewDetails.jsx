@@ -11,11 +11,12 @@ function ViewDetails() {
     []
   );
   const [control, setControl] = useState(false);
+  const [userData, setUserData] = useState(null);
   const { _id } = useParams();
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `https://life-sync-server-eight.vercel.app/donation-requests/single/${_id}`
+        `http://localhost:5000/donation-requests/single/${_id}`
       );
       setDonationRequestSingleData(data);
     })();
@@ -23,11 +24,32 @@ function ViewDetails() {
   console.log(donationRequestSingleData);
   console.log(user);
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:5000/users/${user?.email}`
+        );
+        if (data && data.length > 0) {
+          setUserData(data[0]);
+        }
+      } catch (error) {
+        toast.error('Error fetching user data');
+        console.error(error);
+      }
+    };
+  
+    if (user?.email) {
+      fetchUserData();
+    }
+  }, [user?.email]);
+
+
 
   const handleDonate = () => {
     Swal.fire({
       title: 'Want to Donate?',
-      text: "You won't be able to change this!",
+      text: 'An email will be sent to the recipient with your confirmation.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -36,22 +58,39 @@ function ViewDetails() {
     }).then(async result => {
       if (result.isConfirmed) {
         try {
+          // 1. Update donation request
           const response = await axios.patch(
-            `https://life-sync-server-eight.vercel.app/donation-requests/single-update/${_id}`,
-            { donorsEmail: user.email } // Send user email in request body
+            `http://localhost:5000/donation-requests/single-update/${_id}`,
+            { donorsEmail: user.email }
           );
   
           if (response.data.modifiedCount) {
-            Swal.fire('Successfully updated status');
+            // 2. Send confirmation email
+            await axios.post(`http://localhost:5000/send-donation-confirmation`, {
+              donorName: user.displayName || 'A donor',
+              donorEmail: user.email,
+              donorPhone: userData?.phoneNumber || 'Not provided',
+              recipientEmail: donationRequestSingleData[0]?.email,
+              hospitalName: donationRequestSingleData[0]?.hospitalName,
+              donationDate: donationRequestSingleData[0]?.donationDate,
+              donationTime: donationRequestSingleData[0]?.donationTime,
+            });
+  
+            Swal.fire(
+              'Confirmed!',
+              'Donation status updated & email sent to the recipient!',
+              'success'
+            );
             setControl(!control);
           }
         } catch (error) {
-          Swal.fire('Error', 'Failed to update status', 'error');
-          console.error('Error updating donation status:', error);
+          Swal.fire('Error', 'Failed to update status or send email', 'error');
+          console.error('Error:', error);
         }
       }
     });
   };
+  
   
 
   

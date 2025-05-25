@@ -18,7 +18,7 @@ function NavBar() {
   };
 
   return (
-    <nav className="bg-white border-gray-200 py-2.5">
+    <nav className="bg-white border-gray-200 py-2.5 fixed top-0 left-0 right-0 z-50 shadow-md">
       <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
         <Link to="/" className="flex items-center">
           <img src={logo} className="w-24" alt="LifeSync Logo" />
@@ -54,7 +54,7 @@ function NavBar() {
             {[
               { to: '/dashboard/create-donation-request', label: 'Blood Needed' },
               { to: '/search', label: 'Search Donors' },
-              { to: '/donation-request', label: 'Donation Lists' },
+              { to: '/donation-request', label: 'Recipient Lists' },
               { to: '/blog', label: 'Blog' },
               // { to: '/funding', label: 'Funding' },
             ].map(link => (
@@ -64,7 +64,7 @@ function NavBar() {
                   className={({ isActive }) =>
                     isActive
                       ? 'flex items-center px-3 py-2 bg-blue-500 text-white rounded-md duration-300 font-semibold'
-                      : 'flex items-center text-gray-800 px-3 py-2 font-lato'
+                      : 'flex items-center px-3 py-2 text-gray-800 hover:bg-blue-500 hover:text-white rounded-md font-lato transition duration-300'
                   }
                 >
                   {link.label}

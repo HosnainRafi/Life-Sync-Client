@@ -16,7 +16,7 @@ function Board() {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `https://life-sync-server-eight.vercel.app/users/${user?.email}`
+        `http://localhost:5000/users/${user?.email}`
       );
       setUserData(data[0]);
     })();
@@ -27,40 +27,74 @@ function Board() {
       if (!user?.email) return;
       try {
         const { data } = await axios.get(
-          `https://life-sync-server-eight.vercel.app/donation-requests/donor/${user?.email}`
+          `http://localhost:5000/donation-requests/donor/${user?.email}`
         );
         setRealData(data);
-        setMyDonationReq(data.slice(0, 3));
+        setMyDonationReq(data);
       } catch (error) {
         console.error("Error fetching donation requests:", error);
       }
     })();
   }, [control, user?.email]);
 
+  const handleAccept = async (id) => {
+    try {
+      const response = await axios.patch(
+        `http://localhost:5000/donation-requests/accept/${id}`
+      );
+  
+      if (response.data.modifiedCount) {
+        // Fetch the updated request to get recipient details
+        const { data: requestData } = await axios.get(
+          `http://localhost:5000/donation-requests/single/${id}`
+        );
+        const request = requestData[0]; // Assuming it's in an array
+  
+        // Get donor info (from your userData state)
+        const emailPayload = {
+          donorName: userData?.name,
+          donorEmail: userData?.email,
+          donorPhone: userData?.phone,
+          recipientEmail: request?.recipientEmail,
+        };
+  
+        // Send the email
+        await axios.post('http://localhost:5000/send-donation-confirmation', emailPayload);
+  
+        Swal.fire('You have accepted the donation request and the recipient has been notified!');
+        setControl(!control);
+      }
+    } catch (err) {
+      console.error('Error accepting request or sending email:', err);
+      Swal.fire('Failed to accept request or send email.');
+    }
+  };
+  
+
   const handleDone = async id => {
     const response = await axios.patch(
-      `https://life-sync-server-eight.vercel.app/donation-requests/done/${id}`
+      `http://localhost:5000/donation-requests/done/${id}`
     );
     if (response.data.modifiedCount) {
-      Swal.fire('Successful updated Status to Done');
+      Swal.fire('Successfully updated status to Done');
       setControl(!control);
     }
   };
 
   const handleCancel = async id => {
     const response = await axios.patch(
-      `https://life-sync-server-eight.vercel.app/donation-requests/cancel/${id}`
+      `http://localhost:5000/donation-requests/cancel/${id}`
     );
     if (response.data.modifiedCount) {
-      Swal.fire('Successful Cancel Request');
+      Swal.fire('Successfully Cancelled Request');
       setControl(!control);
     }
   };
 
   const handleDelete = id => {
     Swal.fire({
-      title: 'Sure want to Delete?',
-      text: "You won't be able to revert this!",
+      title: 'Are you sure you want to delete?',
+      text: "This action cannot be undone!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -69,10 +103,10 @@ function Board() {
     }).then(async result => {
       if (result.isConfirmed) {
         const response = await axios.delete(
-          `https://life-sync-server-eight.vercel.app/donation-requests/${id}`
+          `http://localhost:5000/donation-requests/${id}`
         );
         if (response.data.deletedCount) {
-          Swal.fire('Successful Deleted Request');
+          Swal.fire('Successfully Deleted Request');
           setControl(!control);
         }
       }
@@ -81,6 +115,20 @@ function Board() {
 
   const handleViewAllRequest = () => {
     navigate('/dashboard/my-donation-request');
+  };
+
+  const getStatusBadge = status => {
+    const colorMap = {
+      pending: 'badge-warning',
+      inprogress: 'badge-info',
+      done: 'badge-success',
+      cancelled: 'badge-error',
+    };
+    return (
+      <span className={`badge ${colorMap[status] || 'badge-neutral'} capitalize`}>
+        {status}
+      </span>
+    );
   };
 
   return (
@@ -92,46 +140,53 @@ function Board() {
       {userData?.role === 'Donor' && (
         <>
           {myDonationReq.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="table table-xs table-pin-rows table-pin-cols">
+            <div className="overflow-auto">
+              <table className="min-w-[900px] table table-xs table-pin-rows table-pin-cols">
                 <thead>
                   <tr>
-                    <th></th>
+                    <th>#</th>
                     <th>Recipient Name</th>
-                    <th>Recipient Location</th>
-                    <th>Donation Date</th>
-                    <th>Donation Time</th>
-                    <th>Donation Status</th>
-                    <th></th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                     <th>Edit</th>
                     <th>Delete</th>
-                    <th>View Details</th>
-                    <th></th>
+                    <th>Details</th>
                   </tr>
                 </thead>
                 <tbody>
                   {myDonationReq.map((donation, index) => (
                     <tr key={donation?._id}>
-                      <th>{index + 1}</th>
+                      <td>{index + 1}</td>
                       <td>{donation?.recipientName}</td>
                       <td>
                         {donation?.recipientUpazila}, {donation?.recipientDistrict}
                       </td>
                       <td>{donation?.donationDate}</td>
                       <td>{donation.donationTime}</td>
-                      <td>{donation?.status}</td>
+                      <td>{getStatusBadge(donation?.status)}</td>
                       <td>
+                        {donation?.status === 'pending' && (
+                          <button
+                            onClick={() => handleAccept(donation?._id)}
+                            className="btn btn-success btn-sm"
+                          >
+                            Accept
+                          </button>
+                        )}
                         {donation?.status === 'inprogress' && (
-                          <div className="flex item-center gap-2">
+                          <div className="flex gap-2">
                             <button
                               onClick={() => handleDone(donation?._id)}
-                              className="btn btn-primary btn-sm mr-2"
+                              className="btn btn-primary btn-sm"
                             >
                               Done
                             </button>
                             <button
                               onClick={() => handleCancel(donation?._id)}
-                              className="btn btn-sm btn-secondary"
+                              className="btn btn-secondary btn-sm"
                             >
                               Cancel
                             </button>
@@ -153,26 +208,26 @@ function Board() {
                           Delete
                         </button>
                       </td>
-                      <th>
+                      <td>
                         <Link to={`/dashboard/view-details/${donation?._id}`}>
                           <button className="btn btn-outline btn-sm">Details</button>
                         </Link>
-                      </th>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
-              {realData.length > 0 && (
+              {/* {realData.length > 0 && (
                 <div className="text-center my-8 lg:my-12">
                   <button
                     onClick={handleViewAllRequest}
                     className="btn btn-primary"
                   >
-                    View My All Requests
+                    View All My Requests
                   </button>
                 </div>
-              )}
+              )} */}
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center mt-10 text-center">
