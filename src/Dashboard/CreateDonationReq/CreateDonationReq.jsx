@@ -55,48 +55,76 @@ useEffect(() => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const recipientName = form.recipientName.value;
-    const bloodGroup = form.bloodGroup.value;
-    const phoneNumber = form.phoneNumber.value;
-    const recipientDistrict = form.recipientDistrict.value;
-    const recipientUpazila = form.recipientUpazila.value;
-    const hospitalName = form.hospitalName.value;
-    const address = form.address.value;
-    const donationDate = form.donationDate.value;
-    const donationTime = form.donationTime.value;
-    const description = form.textarea.value;
-    const email = user?.email;
+  e.preventDefault();
+  const form = e.target;
+  const recipientName = form.recipientName.value;
+  const bloodGroup = form.bloodGroup.value;
+  const phoneNumber = form.phoneNumber.value;
+  const recipientDistrict = form.recipientDistrict.value;
+  const recipientUpazila = form.recipientUpazila.value;
+  const hospitalName = form.hospitalName.value;
+  const address = form.address.value;
+  const donationDate = form.donationDate.value;
+  const donationTime = form.donationTime.value;
+  const description = form.textarea.value;
+  const email = user?.email;
 
-    const donationRequest = {
-      recipientName,
-      bloodGroup,
-      phoneNumber,
-      recipientDistrict,
-      recipientUpazila,
-      hospitalName,
-      address,
-      donationDate,
-      donationTime,
-      description,
-      status: 'pending',
-      email,
-    };
-
-    try {
-      const res = await axios.post(
-        'https://life-sync-server-eight.vercel.app/donation-requests',
-        donationRequest
-      );
-      if (res.data.insertedId) {
-        Swal.fire('Successfully added donation request');
-        navigate('/dashboard/my-donation-request');
-      }
-    } catch (error) {
-      console.error('Error creating donation request:', error);
-    }
+  const donationRequest = {
+    recipientName,
+    bloodGroup,
+    phoneNumber,
+    recipientDistrict,
+    recipientUpazila,
+    hospitalName,
+    address,
+    donationDate,
+    donationTime,
+    description,
+    status: 'pending',
+    email,
   };
+
+  try {
+    // 1. Create the donation request
+    const res = await axios.post(
+      'https://life-sync-server-eight.vercel.app/donation-requests',
+      donationRequest
+    );
+
+    if (res.data.insertedId) {
+      // 2. Fetch matching donors
+     const donorRes = await axios.get(
+  `https://life-sync-server-eight.vercel.app/donors-email?bloodGroup=${encodeURIComponent(bloodGroup)}&district=${encodeURIComponent(recipientDistrict)}`
+);
+      const matchingDonors = donorRes.data;
+
+      // 3. Notify matching donors (POST to a server route that sends emails)
+      if (matchingDonors.length > 0) {
+        const notifyRes = await axios.post(
+          'https://life-sync-server-eight.vercel.app/notify-donors',
+          {
+            donors: matchingDonors,
+            request: donationRequest,
+          }
+        );
+
+        if (notifyRes.data.success) {
+          Swal.fire('Successfully added request & notified donors!');
+        } else {
+          Swal.fire('Request created, but failed to notify donors.');
+        }
+      } else {
+        Swal.fire('Request created, but no matching donors found.');
+      }
+
+      navigate('/dashboard/my-donation-request');
+    }
+  } catch (error) {
+    console.error('Error creating donation request:', error);
+    Swal.fire('Something went wrong. Please try again.');
+  }
+};
+
 
   useEffect(() => {
     (async () => {
