@@ -157,7 +157,7 @@ function DonationRequest() {
                   <th className="px-4 py-3 text-left">Donor name</th>
                   <th className="px-4 py-3 text-left">Donor email</th>
                   <th className="px-4 py-3 text-left">Donor Phone</th>
-                  <th className="px-4 py-3 text-left">Donor address</th>
+                  {/* <th className="px-4 py-3 text-left">Donor address</th> */}
                   <th className="px-4 py-3 text-left">Details</th>
                 </tr>
               </thead>
@@ -169,7 +169,7 @@ function DonationRequest() {
                     <td className="px-4 py-3">{donor.recipientDistrict}</td>
                     <td className="px-4 py-3">{donor.recipientUpazila}</td>
                     <td className="px-4 py-3">{donor.phoneNumber}</td>
-                    <td className="px-4 py-3">{donor.address}</td>
+                    {/* <td className="px-4 py-3">{donor.address}</td> */}
                     <td className="px-4 py-3">
                       {donor.status === "inprogress"
                         ? "Request Accepted"
