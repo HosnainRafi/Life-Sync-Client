@@ -108,7 +108,7 @@ function SignIn() {
               </button>
             </div>
           </form>
-          <div className='mt-5'>
+          {/* <div className='mt-5'>
             <button
               onClick={handleGoogleLogin}
               className="w-full px-6 py-2.5 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 flex items-center gap-2 justify-center"
@@ -116,7 +116,7 @@ function SignIn() {
               <FaGoogle className="text-lg text-white" />
               google
             </button>
-          </div>
+          </div> */}
           <p className="mt-8 text-base font-light text-center text-gray-800">
             {' '}
             Do not have an account?{' '}
