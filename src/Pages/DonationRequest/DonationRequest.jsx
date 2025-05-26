@@ -169,7 +169,7 @@ function DonationRequest() {
                     <td className="px-4 py-3">{donor.recipientDistrict}</td>
                     <td className="px-4 py-3">{donor.recipientUpazila}</td>
                     <td className="px-4 py-3">{donor.phoneNumber}</td>
-                    {/* <td className="px-4 py-3">{donor.address}</td> */}
+                    <td className="px-4 py-3">{donor.address}</td>
                     <td className="px-4 py-3">
                       {donor.status === "inprogress"
                         ? "Request Accepted"
@@ -182,7 +182,7 @@ function DonationRequest() {
                     <td className="px-4 py-3">{donor.donorName}</td>
                     <td className="px-4 py-3">{donor.donorsEmail}</td>
                     <td className="px-4 py-3">{donor.donorPhone}</td>
-                    <td className="px-4 py-3">{donor.address}</td>
+                    {/* <td className="px-4 py-3">{donor.address}</td> */}
                     
                     <td className="px-4 py-3">
                       <Link to={`/view-details/${donor._id}`}>
